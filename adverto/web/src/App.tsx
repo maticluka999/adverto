@@ -1,5 +1,7 @@
+import MyRouter from './MyRouter';
+
 function App() {
-  return <div className='text-blue-500'>Hello world</div>;
+  return <MyRouter />;
 }
 
 export default App;
