@@ -1,13 +1,14 @@
-import { MyStack } from "./MyStack";
-import { App } from "@serverless-stack/resources";
+import { ApiGateway } from './ApiGateway';
+import { App } from '@serverless-stack/resources';
+import { CognitoUserPool } from './CognitoUserPool';
 
 export default function (app: App) {
   app.setDefaultFunctionProps({
-    runtime: "nodejs16.x",
-    srcPath: "services",
+    runtime: 'nodejs16.x',
+    srcPath: 'services',
     bundle: {
-      format: "esm",
+      format: 'esm',
     },
   });
-  app.stack(MyStack);
+  app.stack(ApiGateway).stack(CognitoUserPool);
 }
