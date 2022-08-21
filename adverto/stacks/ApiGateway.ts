@@ -7,6 +7,8 @@ export function ApiGateway({ stack }: StackContext) {
     },
   });
   stack.addOutputs({
-    ApiEndpoint: api.url,
+    API_URL: api.url,
   });
+
+  return api;
 }

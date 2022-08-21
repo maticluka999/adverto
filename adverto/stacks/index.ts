@@ -2,6 +2,8 @@ import { ApiGateway } from './ApiGateway';
 import { App } from '@serverless-stack/resources';
 import { CognitoUserPool } from './CognitoUserPool';
 import { CognitoUserPoolClient } from './CognitoUserPoolClient';
+import { Web } from './Web';
+import { Database } from './Database';
 
 export default function (app: App) {
   app.setDefaultFunctionProps({
@@ -11,5 +13,10 @@ export default function (app: App) {
       format: 'esm',
     },
   });
-  app.stack(ApiGateway).stack(CognitoUserPool).stack(CognitoUserPoolClient);
+  app
+    .stack(Database)
+    .stack(ApiGateway)
+    .stack(CognitoUserPool)
+    .stack(CognitoUserPoolClient)
+    .stack(Web);
 }
