@@ -1,6 +1,7 @@
 import { Auth } from 'aws-amplify';
 import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import ErrorLabel from '../components/ErrorLabel';
 import Input from '../components/Input';
 import LoadingSpinner from '../components/LoadingSpinner';
 
@@ -12,10 +13,11 @@ type State = {
 function ConfirmSignupPage() {
   const location = useLocation();
   const { username, password } = location.state as State;
-  console.log(username, password);
+
   const navigate = useNavigate();
 
   const [code, setCode] = useState('');
+  const [errorText, setErrorText] = useState('');
   const [fetching, setFetching] = useState(false);
 
   const resend = async () => {
@@ -42,9 +44,16 @@ function ConfirmSignupPage() {
       console.log(signInResponse);
 
       navigate('/');
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      alert('Unknown error ocurred');
+
+      switch (error.name) {
+        case 'CodeMismatchException':
+          setErrorText('Invalid verification code provided.');
+          break;
+        default:
+          alert('Unknown error occurred');
+      }
     }
 
     setFetching(false);
@@ -54,13 +63,14 @@ function ConfirmSignupPage() {
     <div className='flex flex-col items-center'>
       <div className='flex flex-col items-center bg-white shadow-lg mt-28 p-5'>
         <div>Verification code has been sent to:</div>
-        <div className='mb-5'>{username}</div>
+        <div className='mb-9'>{username}</div>
         <Input
           text='Enter verification code:'
           placeholder=''
           onChange={(e) => setCode(e.target.value)}
         />
-        <div className='flex items-center justify-center mt-5 h-20'>
+        <ErrorLabel text={errorText} />
+        <div className='flex items-center justify-center h-20'>
           {fetching ? (
             <LoadingSpinner />
           ) : (

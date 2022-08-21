@@ -40,6 +40,8 @@ function SignupPage() {
   const [errorText, setErrorText] = useState('');
 
   const onSubmit = async (data: Record<string, string>) => {
+    setErrorText('');
+
     const params = {
       username: data.email,
       password: data.password,
@@ -59,9 +61,16 @@ function SignupPage() {
       navigate('/confirm-signup', {
         state: { username: params.username, password: params.password },
       });
-    } catch (error) {
+    } catch (error: any) {
       console.log('error signing up:', error);
-      alert('Unknown error ocurred');
+
+      switch (error.name) {
+        case 'UsernameExistsException':
+          setErrorText('User with selected email already exists.');
+          break;
+        default:
+          alert('Unknown error ocurred');
+      }
     }
 
     setFetching(false);
