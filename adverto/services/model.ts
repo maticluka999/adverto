@@ -1,5 +1,5 @@
 export type Advertiser = {
-  pk: string; // ADVERTISER#username (uuid)
+  pk: string; // username (uuid)
   sk: 'info';
   givenName: string;
   familyName: string;
@@ -8,7 +8,9 @@ export type Advertiser = {
 
 export type Ad = {
   pk: string; // advertiserUsername (uuid)
-  sk: string; // AD#id (uuid)
+  sk: string; // ad#id (uuid)
+  gsi1pk: 'ad'; // we need this to query ads sorted by date created
+  gsi1sk: number; // createdAt (timestamp)
   title: string;
   text: string;
 };

@@ -5,8 +5,8 @@ export function Database({ stack }: StackContext) {
     fields: {
       pk: 'string',
       sk: 'string',
-      // gsi1pk: 'string',
-      // gsi1sk: 'string',
+      gsi1pk: 'string',
+      gsi1sk: 'number',
       // gsi2pk: 'string',
       // gsi2sk: 'string',
     },
@@ -14,16 +14,16 @@ export function Database({ stack }: StackContext) {
       partitionKey: 'pk',
       sortKey: 'sk',
     },
-    // globalIndexes: {
-    //   gsi1: {
-    //     partitionKey: 'gsi1pk',
-    //      sortKey: 'gsi1sk',
-    //   },
-    //   gsi2: {
-    //     partitionKey: 'gsi2pk',
-    //     sortKey: 'gsi2sk',
-    //   },
-    // },
+    globalIndexes: {
+      gsi1: {
+        partitionKey: 'gsi1pk',
+        sortKey: 'gsi1sk',
+      },
+      // gsi2: {
+      //   partitionKey: 'gsi2pk',
+      //   sortKey: 'gsi2sk',
+      // },
+    },
   });
 
   return table;
