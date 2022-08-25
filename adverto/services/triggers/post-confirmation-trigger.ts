@@ -14,6 +14,17 @@ export const handler: PostConfirmationTriggerHandler = async (
   console.log(event);
 
   try {
+    const provider = new aws.CognitoIdentityServiceProvider({
+      region: event.region,
+    });
+
+    const params = {
+      GroupName: 'Advertisers',
+      Username: event.userName,
+      UserPoolId: event.userPoolId,
+    };
+    await provider.adminAddUserToGroup(params).promise();
+
     const advertiser: Advertiser = {
       pk: event.userName,
       sk: 'info',

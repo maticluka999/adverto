@@ -6,6 +6,7 @@ export function ApiGateway({ stack }: StackContext) {
 
   const api = new Api(stack, 'api', {
     defaults: {
+      authorizer: 'iam',
       function: {
         permissions: [db],
         environment: {

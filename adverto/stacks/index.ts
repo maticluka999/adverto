@@ -4,6 +4,11 @@ import { CognitoUserPool } from './CognitoUserPool';
 import { CognitoUserPoolClient } from './CognitoUserPoolClient';
 import { Web } from './Web';
 import { Database } from './Database';
+import { CognitoIdentityPool } from './CognitoIdentityPool';
+import { AdminRole } from './roles/AdminRole';
+import { AdvertiserRole } from './roles/AdvertiserRole';
+import { AdminsGroup } from './groups/AdminsGroup';
+import { AdvertiserGroup } from './groups/AdvertisersGroup';
 
 export default function (app: App) {
   app.setDefaultFunctionProps({
@@ -18,5 +23,10 @@ export default function (app: App) {
     .stack(ApiGateway)
     .stack(CognitoUserPool)
     .stack(CognitoUserPoolClient)
+    .stack(CognitoIdentityPool)
+    .stack(AdminRole)
+    .stack(AdminsGroup)
+    .stack(AdvertiserRole)
+    .stack(AdvertiserGroup)
     .stack(Web);
 }

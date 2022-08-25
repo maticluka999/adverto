@@ -66,7 +66,6 @@ const addTriggers = (stack: Stack, userPool: UserPool) => {
       runtime: Runtime.NODEJS_16_X,
       entry: 'services/triggers/post-confirmation-trigger.ts',
       environment: {
-        REGION: stack.region,
         TABLE: db.tableName,
       },
     }
@@ -76,7 +75,7 @@ const addTriggers = (stack: Stack, userPool: UserPool) => {
     new Policy(stack, 'post-confirmation-trigger-policy', {
       statements: [
         new PolicyStatement({
-          actions: ['cognito-idp:AdminUpdateUserAttributes'],
+          actions: ['cognito-idp:AdminAddUserToGroup'],
           effect: Effect.ALLOW,
           resources: [userPool.userPoolArn],
         }),
