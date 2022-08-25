@@ -119,7 +119,7 @@ function SignupPage() {
         <ErrorLabel text={errors.password?.message} />
         <Input
           type='password'
-          text='Confirm password'
+          text='Confirm password:'
           placeholder='confirm password'
           {...register('confirm_password')}
         />

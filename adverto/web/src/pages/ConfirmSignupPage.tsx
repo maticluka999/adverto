@@ -78,7 +78,10 @@ function ConfirmSignupPage() {
               <button className='btnPrimary w-32' onClick={confirm}>
                 Confirm
               </button>
-              <button className='mt-3 text-blue-500' onClick={resend}>
+              <button
+                className='mt-3 text-blue-500 hover:underline'
+                onClick={resend}
+              >
                 Resend verification code
               </button>
             </div>

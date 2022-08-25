@@ -7,8 +7,6 @@ import { HttpMethod } from '../utils/http-method.enum';
 function HomePage() {
   const navigate = useNavigate();
 
-  const [text, setText] = useState('');
-
   const getAds = async () => {
     console.log('getAds');
     const response = await invokeApi(HttpMethod.GET, '/ads');
@@ -46,7 +44,6 @@ function HomePage() {
       <button className='btnSecondary' onClick={invokeAdminFunction}>
         Admin function
       </button>
-      {text}
     </div>
   );
 }

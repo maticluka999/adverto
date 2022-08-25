@@ -1,6 +1,6 @@
 import { Auth } from 'aws-amplify';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 function LoginPage() {
@@ -38,14 +38,12 @@ function LoginPage() {
         case 'UserNotConfirmedException':
           navigate(`/confirm-signup/${username}`);
           break;
+        default:
+          alert('Unknown error occurred.');
       }
     }
 
     setFetching(false);
-  };
-
-  const signUp = (event: React.MouseEvent<HTMLButtonElement>) => {
-    navigate('/signup');
   };
 
   const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -77,6 +75,12 @@ function LoginPage() {
             onKeyDown={onInputKeyDown}
           />
         </div>
+        <Link
+          className='mb-3 text-blue-500 hover:underline'
+          to='/forgot-password'
+        >
+          Forgot password?
+        </Link>
         {fetching ? (
           <div className='mt-4'>
             <LoadingSpinner />
@@ -89,9 +93,9 @@ function LoginPage() {
             <button className='btnPrimary my-2' onClick={logIn}>
               Log in
             </button>
-            <button className='btnSecondary' onClick={signUp}>
+            <Link className='btnSecondary text-center' to='/signup'>
               Sign up
-            </button>
+            </Link>
           </div>
         )}
       </div>
