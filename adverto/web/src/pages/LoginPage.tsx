@@ -2,6 +2,8 @@ import { Auth } from 'aws-amplify';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
+import { ReactComponent as GoogleIcon } from '../assets/icons/google.svg';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -52,8 +54,12 @@ function LoginPage() {
     }
   };
 
+  const googleSignIn = () => {
+    Auth.federatedSignIn({ provider: CognitoHostedUIIdentityProvider.Google });
+  };
+
   return (
-    <div className='bg-white h-screen'>
+    <div className='h-screen'>
       <h1 className='text-blue-600 text-4xl text-center font-bold pt-20 mb-8'>
         Welcome to Adverto
       </h1>
@@ -98,6 +104,15 @@ function LoginPage() {
             </Link>
           </div>
         )}
+        <button
+          className='flex items-center mt-5 bg-white shadow-lg p-3'
+          onClick={googleSignIn}
+        >
+          <div className='w-6 h-6 mr-3 '>
+            <GoogleIcon />
+          </div>
+          <div className='font-bold opacity-50'>Sign in with Google</div>
+        </button>
       </div>
     </div>
   );

@@ -47,6 +47,7 @@ export async function executeSignedApi(
 
   try {
     idToken = (await Auth.currentSession()).getIdToken();
+    console.log(idToken);
   } catch (err) {
     console.log(err);
   }

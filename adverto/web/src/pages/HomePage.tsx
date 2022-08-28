@@ -1,11 +1,22 @@
 import { Auth } from 'aws-amplify';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import awsAmplifyConfig from '../config/aws-amplify.config';
 import { executeSignedApi as invokeApi } from '../utils/aws.utils';
 import { HttpMethod } from '../utils/http-method.enum';
 
 function HomePage() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const printUserInfo = async () => {
+      console.log(await Auth.currentSession());
+    };
+
+    console.log(awsAmplifyConfig);
+
+    printUserInfo();
+  }, []);
 
   const getAds = async () => {
     console.log('getAds');

@@ -13,23 +13,30 @@ export function CognitoUserPoolClient({ stack }: StackContext) {
 
   const userPoolClient = new UserPoolClient(stack, 'userPoolClient', {
     userPoolClientName: `${stack.stage}-${constants.APP_NAME}-userPoolClient`,
-    userPool: userPool,
-    supportedIdentityProviders: [UserPoolClientIdentityProvider.COGNITO],
+    userPool,
+    supportedIdentityProviders: [
+      UserPoolClientIdentityProvider.COGNITO,
+      UserPoolClientIdentityProvider.GOOGLE,
+    ],
     readAttributes: generateReadAttributes(),
     writeAttributes: generateWriteAttributes(),
+    oAuth: {
+      callbackUrls: ['http://localhost:3000'], // DEPLOY_IMPORTANT: this must be set to proper value via console once deployed
+      logoutUrls: ['http://localhost:3000/login'], // DEPLOY_IMPORTANT: this must be set to proper value via console once deployed
+    },
   });
 
   return userPoolClient;
 }
 
-const generateReadAttributes = () => {
+function generateReadAttributes() {
   return new ClientAttributes().withStandardAttributes(
     standardCognitoAttributes
   );
-};
+}
 
-const generateWriteAttributes = () => {
+function generateWriteAttributes() {
   return new ClientAttributes().withStandardAttributes(
     standardCognitoAttributes
   );
-};
+}

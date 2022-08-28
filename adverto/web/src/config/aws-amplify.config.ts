@@ -14,6 +14,21 @@ const awsAmplifyConfig = {
       },
     ],
   },
+  oauth: {
+    domain: process.env.REACT_APP_USER_POOL_DOMAIN,
+    redirectSignIn: generateRedirectSignIn(),
+    redirectSignOut: generateRedirectSignOut(),
+    responseType: 'token',
+    scope: ['email', 'profile', 'openid'],
+  },
 };
+
+function generateRedirectSignIn() {
+  return window.location.origin;
+}
+
+function generateRedirectSignOut() {
+  return window.location.origin + '/login';
+}
 
 export default awsAmplifyConfig;

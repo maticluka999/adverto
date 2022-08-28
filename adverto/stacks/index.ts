@@ -9,6 +9,7 @@ import { AdminRole } from './roles/AdminRole';
 import { AdvertiserRole } from './roles/AdvertiserRole';
 import { AdminsGroup } from './groups/AdminsGroup';
 import { AdvertiserGroup } from './groups/AdvertisersGroup';
+import { GoogleIdentityProvider } from './GoogleIdentityProvider';
 
 export default function (app: App) {
   app.setDefaultFunctionProps({
@@ -22,6 +23,7 @@ export default function (app: App) {
     .stack(Database)
     .stack(ApiGateway)
     .stack(CognitoUserPool)
+    .stack(GoogleIdentityProvider)
     .stack(CognitoUserPoolClient)
     .stack(CognitoIdentityPool)
     .stack(AdminRole)
