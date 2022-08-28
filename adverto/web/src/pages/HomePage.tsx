@@ -7,10 +7,13 @@ import { HttpMethod } from '../utils/http-method.enum';
 
 function HomePage() {
   const navigate = useNavigate();
+  const [profilePic, setProfilePic] = useState('');
 
   useEffect(() => {
     const printUserInfo = async () => {
-      console.log(await Auth.currentSession());
+      const currentSession = await Auth.currentSession();
+      setProfilePic(currentSession.getIdToken().payload.picture);
+      console.log(currentSession);
     };
 
     console.log(awsAmplifyConfig);
@@ -36,6 +39,7 @@ function HomePage() {
 
   return (
     <div>
+      <img src={profilePic} referrerPolicy='no-referrer' />
       Home page
       <button
         className='btnSecondary'

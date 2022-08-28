@@ -31,6 +31,7 @@ export const handler: PostConfirmationTriggerHandler = async (
       familyName: event.request.userAttributes['family_name'],
       givenName: event.request.userAttributes['given_name'],
       email: event.request.userAttributes['email'],
+      profilePicture: event.request.userAttributes['picture'],
     };
     await createAdvertiser(advertiser);
   } catch (error) {

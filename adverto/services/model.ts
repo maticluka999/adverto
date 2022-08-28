@@ -4,6 +4,7 @@ export type Advertiser = {
   givenName: string;
   familyName: string;
   email: string;
+  profilePicture: string;
 };
 
 export type Ad = {

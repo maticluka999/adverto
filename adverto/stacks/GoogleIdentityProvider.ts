@@ -21,6 +21,7 @@ export function GoogleIdentityProvider({ stack }: StackContext) {
       givenName: ProviderAttribute.GOOGLE_GIVEN_NAME,
       familyName: ProviderAttribute.GOOGLE_FAMILY_NAME,
       email: ProviderAttribute.GOOGLE_EMAIL,
+      profilePicture: ProviderAttribute.GOOGLE_PICTURE,
     },
   });
 
