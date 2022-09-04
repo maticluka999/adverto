@@ -11,7 +11,7 @@
 @layer components {
   .input {
     @apply border-2 border-gray-400 rounded leading-5
-  focus:outline-none focus:border-blue-500;
+      focus:outline-none focus:border-blue-500;
   }
 
   .btnPrimary {

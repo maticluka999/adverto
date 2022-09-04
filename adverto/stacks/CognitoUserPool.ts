@@ -29,6 +29,8 @@ export function CognitoUserPool({ stack }: StackContext) {
     },
     userVerification: {
       emailStyle: VerificationEmailStyle.CODE,
+      emailSubject: 'Adverto verification code',
+      emailBody: 'Your Adverto verification code is {####}.',
     },
     passwordPolicy: {
       minLength: 8,
@@ -42,6 +44,7 @@ export function CognitoUserPool({ stack }: StackContext) {
       sms: true,
       otp: false,
     },
+    mfaMessage: 'Your Adverto code is {####}.',
   });
 
   userPool.addDomain('userPoolDomain', {

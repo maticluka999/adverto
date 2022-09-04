@@ -2,14 +2,21 @@ import { ForwardedRef, forwardRef, InputHTMLAttributes } from 'react';
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   text?: string;
+  disabled?: boolean;
 };
 
-function Input({ text, ...rest }: Props, ref: ForwardedRef<HTMLInputElement>) {
+function Input(
+  { text, disabled, ...rest }: Props,
+  ref: ForwardedRef<HTMLInputElement>
+) {
   return (
-    <div className='flex flex-wrap items-center'>
+    <div className='flex flex-wrap items-center w-full'>
       {text && <p className='my-1 w-44 whitespace-nowrap'>{text}</p>}
       <input
-        className='input p-1 flex-grow md:w-72 md:text-lg'
+        className={`input p-1 flex-grow md:text-lg ${
+          disabled && 'bg-gray-200'
+        }`}
+        disabled={disabled}
         {...rest}
         ref={ref}
       />

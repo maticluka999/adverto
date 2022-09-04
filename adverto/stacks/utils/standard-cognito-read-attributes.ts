@@ -1,6 +1,6 @@
 import { StandardAttributesMask } from 'aws-cdk-lib/aws-cognito';
 
-const standardCognitoAttributes: StandardAttributesMask = {
+const standardCognitoReadAttributes: StandardAttributesMask = {
   givenName: true,
   familyName: true,
   email: true,
@@ -12,8 +12,8 @@ const standardCognitoAttributes: StandardAttributesMask = {
   // middleName: true,
   // fullname: true,
   // nickname: true,
-  // phoneNumber: true,
-  // phoneNumberVerified: true,
+  phoneNumber: true,
+  phoneNumberVerified: true,
   profilePicture: true,
   // preferredUsername: true,
   // profilePage: true,
@@ -22,4 +22,4 @@ const standardCognitoAttributes: StandardAttributesMask = {
   // website: true,
 };
 
-export default standardCognitoAttributes;
+export default standardCognitoReadAttributes;

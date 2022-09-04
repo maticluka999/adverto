@@ -37,6 +37,9 @@ function LoginPage() {
         case 'NotAuthorizedException':
           setErrorText('Invalid credentials.');
           break;
+        case 'UserNotFoundException':
+          setErrorText('Invalid credentials.');
+          break;
         case 'UserNotConfirmedException':
           navigate(`/confirm-signup/${username}`);
           break;
@@ -83,7 +86,8 @@ function LoginPage() {
         </div>
         <Link
           className='mb-3 text-blue-500 hover:underline'
-          to='/forgot-password'
+          to='/reset-password'
+          state={{ email: '', emailInputDisabled: false }}
         >
           Forgot password?
         </Link>

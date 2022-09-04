@@ -6,7 +6,8 @@ import {
 } from 'aws-cdk-lib/aws-cognito';
 import { CognitoUserPool } from './CognitoUserPool';
 import constants from './constants';
-import standardCognitoAttributes from './utils/standard-cognito-attributes';
+import standardCognitoReadAttributes from './utils/standard-cognito-read-attributes';
+import standardCognitoWriteAttributes from './utils/standard-cognito-write-attributes';
 
 export function CognitoUserPoolClient({ stack }: StackContext) {
   const userPool = use(CognitoUserPool);
@@ -31,12 +32,12 @@ export function CognitoUserPoolClient({ stack }: StackContext) {
 
 function generateReadAttributes() {
   return new ClientAttributes().withStandardAttributes(
-    standardCognitoAttributes
+    standardCognitoReadAttributes
   );
 }
 
 function generateWriteAttributes() {
   return new ClientAttributes().withStandardAttributes(
-    standardCognitoAttributes
+    standardCognitoWriteAttributes
   );
 }
