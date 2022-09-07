@@ -7,6 +7,7 @@ import {
 } from 'aws-cdk-lib/aws-iam';
 import { ApiGateway } from '../ApiGateway';
 import { CognitoIdentityPool } from '../CognitoIdentityPool';
+import { S3Bucket } from '../S3Bucket';
 import { generateExecuteApiRoot } from '../utils/utils';
 
 export function AdvertiserRole({ stack }: StackContext) {
@@ -40,6 +41,17 @@ function addPolicyStatements(stack: Stack, advertiserRole: Role) {
         `${executeApiRoot}/GET/ads`,
         `${executeApiRoot}/GET/advertiser-function`,
       ],
+    })
+  );
+
+  const bucket = use(S3Bucket);
+  const principalsFolder = `${bucket.bucketArn}/\${cognito-identity.amazonaws.com:sub}/*`;
+
+  advertiserRole.addToPolicy(
+    new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: ['s3:PutObject'],
+      resources: [principalsFolder],
     })
   );
 }

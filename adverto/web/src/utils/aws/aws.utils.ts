@@ -2,7 +2,7 @@ import { API, Auth, Signer } from 'aws-amplify';
 import AWS from 'aws-sdk';
 import { LoginsMap } from 'aws-sdk/clients/cognitoidentity';
 import { CredentialsOptions } from 'aws-sdk/lib/credentials';
-import { HttpMethod } from './http-method.enum';
+import { HttpMethod } from '../http-method.enum';
 
 const cognitoIdentityProvider = `cognito-idp.${process.env.REACT_APP_AWS_REGION}.amazonaws.com/${process.env.REACT_APP_USER_POOL_ID}`;
 

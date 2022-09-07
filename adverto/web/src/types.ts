@@ -9,6 +9,7 @@ export type UserAttributes = {
   familyName: string;
   phoneNumber: string;
   phoneNumberVerified: boolean;
+  profilePicture: string;
 };
 
 export type User = {

@@ -19,7 +19,7 @@ function AccountSettingsTabButton({
 
   return (
     <button
-      className={`flex flex-1 flex-col items-center ${
+      className={`flex flex-1 flex-col items-center pt-3 ${
         isSelected && 'text-blue-500 border-b-2 border-blue-500'
       }`}
       onClick={() => setSelectedTab(tab)}

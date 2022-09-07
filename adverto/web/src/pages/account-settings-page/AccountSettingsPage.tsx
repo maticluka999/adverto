@@ -28,6 +28,7 @@ function AccountSettingsPage() {
         familyName: currentUser.attributes.family_name,
         phoneNumber: currentUser.attributes.phone_number,
         phoneNumberVerified: currentUser.attributes.phone_number_verified,
+        profilePicture: currentUser.attributes.profile_picture,
       };
       const preferredMFA =
         PreferredMFA[currentUser.preferredMFA as keyof typeof PreferredMFA];
@@ -43,7 +44,7 @@ function AccountSettingsPage() {
 
   const renderTabButtons = () => {
     return (
-      <div className='flex justify-around bg-white p-5'>
+      <div className='flex justify-around bg-white p-5 pt-0'>
         <AccountSettingsTabButton
           tab={AccountSettingsPageTab.PERSONAL_INFO}
           text='Personal info'

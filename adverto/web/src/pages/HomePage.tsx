@@ -2,7 +2,7 @@ import { Auth } from 'aws-amplify';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import awsAmplifyConfig from '../config/aws-amplify.config';
-import { executeSignedApi as invokeApi } from '../utils/aws.utils';
+import { executeSignedApi as invokeApi } from '../utils/aws/aws.utils';
 import { HttpMethod } from '../utils/http-method.enum';
 
 function HomePage() {

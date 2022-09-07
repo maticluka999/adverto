@@ -10,6 +10,7 @@ import { AdvertiserRole } from './roles/AdvertiserRole';
 import { AdminsGroup } from './groups/AdminsGroup';
 import { AdvertiserGroup } from './groups/AdvertisersGroup';
 import { GoogleIdentityProvider } from './GoogleIdentityProvider';
+import { S3Bucket } from './S3Bucket';
 
 export default function (app: App) {
   app.setDefaultFunctionProps({
@@ -21,6 +22,7 @@ export default function (app: App) {
   });
   app
     .stack(Database)
+    .stack(S3Bucket)
     .stack(ApiGateway)
     .stack(CognitoUserPool)
     .stack(GoogleIdentityProvider)
