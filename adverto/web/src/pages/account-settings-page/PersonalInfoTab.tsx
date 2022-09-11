@@ -7,16 +7,18 @@ import ErrorLabel from '../../components/ErrorLabel';
 import Input from '../../components/Input';
 import { ReactComponent as CheckCircle } from '../../assets/icons/check-circle.svg';
 import { ReactComponent as ExclamationTriangle } from '../../assets/icons/exclamation-triangle.svg';
-import { UserAttributes } from '../../types';
+import { User } from '../../types';
 import { Auth } from 'aws-amplify';
 import { useNavigate } from 'react-router-dom';
 import defaultProfilePicture from '../../assets/images/default-profile-picture.png';
 import { S3Client } from '../../utils/aws/s3.utils';
 import { getAWSCredentials } from '../../utils/aws/aws.utils';
 import * as AWS from 'aws-sdk';
+import { getFileExtension } from '../../utils/file.utils';
 
 type Props = {
-  userAttributes: UserAttributes;
+  user: User;
+  setUser: (user: User) => void;
 };
 
 const validationSchema = yup.object({
@@ -26,7 +28,7 @@ const validationSchema = yup.object({
   phoneNumber: yup.string(),
 });
 
-function PersonalInfoTab({ userAttributes }: Props) {
+function PersonalInfoTab({ user, setUser }: Props) {
   const navigate = useNavigate();
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -39,18 +41,19 @@ function PersonalInfoTab({ userAttributes }: Props) {
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      email: userAttributes.email,
-      givenName: userAttributes.givenName,
-      familyName: userAttributes.familyName,
-      phoneNumber: userAttributes.phoneNumber,
+      email: user.attributes.email,
+      givenName: user.attributes.givenName,
+      familyName: user.attributes.familyName,
+      phoneNumber: user.attributes.phoneNumber,
     },
   });
 
-  const [fetching, setFetching] = useState(false);
+  const [updatingProfilePic, setUpdatingProfilePic] = useState(false);
+  const [updatingInfo, setUpdatingInfo] = useState(false);
   const [errorText, setErrorText] = useState('');
 
   const onSubmit = async (data: Record<string, string>) => {
-    setFetching(true);
+    setUpdatingInfo(true);
 
     const user = await Auth.currentAuthenticatedUser();
 
@@ -68,7 +71,7 @@ function PersonalInfoTab({ userAttributes }: Props) {
       }
     }
 
-    setFetching(false);
+    setUpdatingInfo(false);
   };
 
   const fileInputHandler = () => {
@@ -80,57 +83,139 @@ function PersonalInfoTab({ userAttributes }: Props) {
   };
 
   const updateProfilePic = async () => {
+    setUpdatingProfilePic(true);
+
     const currentSession = await Auth.currentSession();
-    console.log(currentSession);
-    const credentials = await getAWSCredentials(
-      currentSession.getIdToken().getJwtToken()
-    );
-    console.log('creds', credentials);
+    const idToken = currentSession.getIdToken().getJwtToken();
+    const credentials = await getAWSCredentials(idToken);
     const s3 = new S3Client(
       credentials!.accessKeyId,
       credentials!.secretAccessKey,
       credentials!.sessionToken!
     );
-    console.log(currentSession.getIdToken().payload);
     // @ts-ignore
-    const sub = AWS.config.credentials._identityId;
-    const response = await s3.upload(file!, `${sub}/${file!.name}`);
-    console.log(response);
+    const identityId = AWS.config.credentials._identityId;
+    const key = `${identityId}/profile_picture.${getFileExtension(file!)}`;
+    const s3response = await s3.upload(file!, key);
+    console.log(s3response);
+
+    const user = await Auth.currentAuthenticatedUser();
+
+    try {
+      const response = await Auth.updateUserAttributes(user, {
+        picture: s3response.Location,
+      });
+      console.log(response);
+    } catch (error: any) {
+      switch (error.name) {
+        default:
+          alert('Unknown error occurred.');
+      }
+    }
+
+    setFile(undefined);
+
+    const u = user;
+    u.attributes.picture = s3response.Location;
+    setUser(u);
+
+    setUpdatingProfilePic(false);
+  };
+
+  const removeProfilePic = async () => {
+    setUpdatingProfilePic(true);
+
+    const currentAuthenticatedUser = await Auth.currentAuthenticatedUser();
+
+    try {
+      const response = await Auth.updateUserAttributes(
+        currentAuthenticatedUser,
+        {
+          picture: '',
+        }
+      );
+      console.log(response);
+    } catch (error: any) {
+      switch (error.name) {
+        default:
+          alert('Unknown error occurred.');
+      }
+    }
+
+    setFile(undefined);
+
+    const u = user;
+    u.attributes.picture = '';
+    setUser(u);
+
+    setUpdatingProfilePic(false);
   };
 
   return (
     <div className='flex flex-col items-center text-lg bg-white rounded p-4 pt-2 md:p-8 md:pt-2'>
       <div className='flex justify-evenly items-center'>
-        <img
-          src={
-            (file && URL.createObjectURL(file)) ||
-            userAttributes.profilePicture ||
-            defaultProfilePicture
-          }
-          alt='profile pic'
-          className='w-28 h-28 rounded-full ring-2 ring-gray-300'
-        />
-        <button
-          className='ml-8 btnSecondary'
-          onClick={() => {
-            openUploadFileModal();
-          }}
-        >
-          Upload
-          <input
-            type='file'
-            accept='.png,.jpg,.jpeg'
-            ref={fileInput}
-            onInput={fileInputHandler}
-            hidden
+        <div className='flex flex-col items-center'>
+          <img
+            src={
+              (file && URL.createObjectURL(file)) ||
+              user.attributes.picture ||
+              defaultProfilePicture
+            }
+            alt='profile pic'
+            className='w-28 h-28 rounded-full ring-2 ring-gray-300'
           />
-        </button>
+          {!file && !updatingProfilePic && (
+            <button
+              className='mt-2 text-red-500 text-sm hover:underline'
+              onClick={() => {
+                removeProfilePic();
+              }}
+            >
+              Remove
+            </button>
+          )}
+        </div>
+        {file ? (
+          <button
+            className='ml-8 text-blue-500 text-sm hover:underline'
+            onClick={() => setFile(undefined)}
+          >
+            Cancel
+          </button>
+        ) : (
+          <button
+            className='ml-8 btnSecondary'
+            onClick={() => {
+              openUploadFileModal();
+            }}
+          >
+            Upload
+            <input
+              type='file'
+              accept='.png,.jpg,.jpeg'
+              ref={fileInput}
+              onInput={fileInputHandler}
+              hidden
+            />
+          </button>
+        )}
       </div>
-      {
-        <button className='mt-4 btnPrimary' onClick={updateProfilePic}>
-          Update profile picture
-        </button>
-      }
+      {updatingProfilePic ? (
+        <div className='flex justify-center pt-3'>
+          <LoadingSpinner />
+        </div>
+      ) : (
+        <>
+          {file && (
+            <>
+              <button className='mt-4 btnPrimary' onClick={updateProfilePic}>
+                Update profile picture
+              </button>
+            </>
+          )}
+        </>
+      )}
+      {}
       <div className='w-full h-[1px] bg-gray-300 mt-5 mb-6'></div>
       <form
         className='flex flex-col items-center w-full'
@@ -166,8 +251,8 @@ function PersonalInfoTab({ userAttributes }: Props) {
         />
         <ErrorLabel text={errors.familyName?.message} />
         <div className='flex flex-col items-end text-sm self-end'>
-          {userAttributes.phoneNumber &&
-            (userAttributes.phoneNumberVerified ? (
+          {user.attributes.phoneNumber &&
+            (user.attributes.phoneNumberVerified ? (
               <div className='flex items-center'>
                 <CheckCircle className='w-6 h-6 mr-1' />
                 <div>Phone number verified</div>
@@ -183,7 +268,7 @@ function PersonalInfoTab({ userAttributes }: Props) {
                   onClick={(e) => {
                     e.preventDefault();
                     navigate('/verify-phone-number', {
-                      state: { phoneNumber: userAttributes.phoneNumber },
+                      state: { phoneNumber: user.attributes.phoneNumber },
                     });
                   }}
                 >
@@ -192,8 +277,8 @@ function PersonalInfoTab({ userAttributes }: Props) {
               </>
             ))}
         </div>
-        <div className='mt-5'>
-          {fetching ? (
+        <div className='mt-2'>
+          {updatingInfo ? (
             <div className='flex justify-center pt-3'>
               <LoadingSpinner />
             </div>

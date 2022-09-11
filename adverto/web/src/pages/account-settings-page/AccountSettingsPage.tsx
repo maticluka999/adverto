@@ -28,7 +28,7 @@ function AccountSettingsPage() {
         familyName: currentUser.attributes.family_name,
         phoneNumber: currentUser.attributes.phone_number,
         phoneNumberVerified: currentUser.attributes.phone_number_verified,
-        profilePicture: currentUser.attributes.profile_picture,
+        picture: currentUser.attributes.picture,
       };
       const preferredMFA =
         PreferredMFA[currentUser.preferredMFA as keyof typeof PreferredMFA];
@@ -67,7 +67,7 @@ function AccountSettingsPage() {
   const renderTab = () => {
     switch (selectedTab) {
       case AccountSettingsPageTab.PERSONAL_INFO:
-        return <PersonalInfoTab userAttributes={user!.attributes} />;
+        return <PersonalInfoTab user={user!} setUser={setUser} />;
       case AccountSettingsPageTab.SECURITY:
         return <SecurityTab user={user!} />;
     }
