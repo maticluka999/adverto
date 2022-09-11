@@ -22,7 +22,9 @@ function AccountSettingsPage() {
   useEffect(() => {
     const setupUser = async () => {
       const currentUser = await Auth.currentAuthenticatedUser();
+      console.log(currentUser);
       const attributes = {
+        sub: currentUser.attributes.sub,
         email: currentUser.attributes.email,
         givenName: currentUser.attributes.given_name,
         familyName: currentUser.attributes.family_name,

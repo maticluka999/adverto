@@ -6,10 +6,16 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import VerifyPhoneNumberPage from './pages/VerifyPhoneNumberPage';
+import Navbar from './components/navbar/Navbar';
+import ProfilePage from './pages/profile-page/ProfilePage';
+
+import ScrollToTop from './ScrollToTop';
 
 function MyRouter() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
+      <Navbar />
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='/login' element={<LoginPage />} />
@@ -21,6 +27,7 @@ function MyRouter() {
           path='/verify-phone-number'
           element={<VerifyPhoneNumberPage />}
         />
+        <Route path='/advertisers/:sub' element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   );

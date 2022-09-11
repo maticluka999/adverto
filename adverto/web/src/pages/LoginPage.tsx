@@ -84,19 +84,21 @@ function LoginPage() {
             onKeyDown={onInputKeyDown}
           />
         </div>
-        <Link
-          className='mb-3 text-blue-500 hover:underline'
-          to='/reset-password'
-          state={{ email: '', emailInputDisabled: false }}
-        >
-          Forgot password?
-        </Link>
+        {!fetching && (
+          <Link
+            className='mb-3 text-blue-500 hover:underline'
+            to='/reset-password'
+            state={{ email: '', emailInputDisabled: false }}
+          >
+            Forgot password?
+          </Link>
+        )}
         {fetching ? (
           <div className='mt-4'>
             <LoadingSpinner />
           </div>
         ) : (
-          <div className='flex flex-col w-80 px-16 md:px-0 text-lg'>
+          <div className='flex flex-col w-80 px-3 md:px-0 text-lg'>
             <p className='text-red-600 text-center text' hidden={!errorText}>
               {errorText}
             </p>
@@ -106,17 +108,19 @@ function LoginPage() {
             <Link className='btnSecondary text-center' to='/signup'>
               Sign up
             </Link>
+            <button
+              className='self-center flex items-center mt-5 bg-white shadow-lg p-3'
+              onClick={googleSignIn}
+            >
+              <div className='w-6 h-6 mr-3'>
+                <GoogleIcon />
+              </div>
+              <div className='font-bold opacity-50 text-sm md:text-base'>
+                Sign in with Google
+              </div>
+            </button>
           </div>
         )}
-        <button
-          className='flex items-center mt-5 bg-white shadow-lg p-3'
-          onClick={googleSignIn}
-        >
-          <div className='w-6 h-6 mr-3 '>
-            <GoogleIcon />
-          </div>
-          <div className='font-bold opacity-50'>Sign in with Google</div>
-        </button>
       </div>
     </div>
   );
