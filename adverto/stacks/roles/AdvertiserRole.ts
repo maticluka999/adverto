@@ -38,7 +38,10 @@ function addPolicyStatements(stack: Stack, advertiserRole: Role) {
       effect: Effect.ALLOW,
       actions: ['execute-api:Invoke'],
       resources: [
+        `${executeApiRoot}/POST/ads`,
         `${executeApiRoot}/GET/ads`,
+        `${executeApiRoot}/PUT/ads`,
+        `${executeApiRoot}/DELETE/ads/*`,
         `${executeApiRoot}/GET/advertiser-function`,
       ],
     })

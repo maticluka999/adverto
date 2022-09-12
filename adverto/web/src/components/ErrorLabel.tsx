@@ -6,12 +6,13 @@ interface Props {
     | FieldError
     | Merge<FieldError, FieldErrorsImpl<any>>
     | undefined;
+  additinalClassName?: string;
 }
 
-function ErrorLabel(props: Props) {
+function ErrorLabel({ text, additinalClassName }: Props) {
   return (
-    <div className='mt-1 mb-3 w-80'>
-      <p className='text-red-600 text-center text-base'>{props.text}</p>
+    <div className={`mt-1 mb-3 w-80 ${additinalClassName}`}>
+      <p className='text-red-600 text-center text-base'>{text}</p>
     </div>
   );
 }

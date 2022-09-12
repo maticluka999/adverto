@@ -6,11 +6,11 @@ import AdActionsButton from './AdActionsButton';
 
 type Props = {
   ad: Ad;
-  user: AdvertiserDto;
+  advertiser: AdvertiserDto;
   onRemoveAd: (adId: string) => void;
 };
 
-function AdItem({ ad, user, onRemoveAd }: Props) {
+function AdItem({ ad, advertiser: user, onRemoveAd }: Props) {
   const locale = 'en-US';
 
   return (
@@ -18,14 +18,14 @@ function AdItem({ ad, user, onRemoveAd }: Props) {
       <div className='flex justify-between'>
         <div className='flex flex-row items-center'>
           <Link to={`/advertisers/${user.sub}`} className='m-2'>
-            <UserImage src={user.profilePicture} width={50} height={50} />
+            <UserImage src={user.picture} width={50} height={50} />
           </Link>
           <div>
             <Link to={`/advertisers/${user.sub}`} className='font-bold'>
               {`${user.givenName} ${user.familyName}`}
             </Link>
             <p className='text-xs text-gray-600'>
-              {new Date(ad.dateCreated).toLocaleString(
+              {new Date(ad.createdAt).toLocaleString(
                 locale,
                 dateTimeFormatOptions
               )}
@@ -48,7 +48,7 @@ function AdItem({ ad, user, onRemoveAd }: Props) {
         </p>
         <p>
           <span className='font-medium mr-1'>Email:</span>
-          <span className='text-gray-600 text-sm'>{ad.user.email}</span>
+          <span className='text-gray-600 text-sm'>{ad.advertiser.email}</span>
         </p>
       </div>
       <div></div>

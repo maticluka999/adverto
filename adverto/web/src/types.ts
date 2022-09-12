@@ -22,7 +22,7 @@ export type AdvertiserDto = {
   sub: string;
   givenName: string;
   familyName: string;
-  profilePicture: string;
+  picture: string;
   email: string;
 };
 
@@ -33,8 +33,8 @@ export type Ad = {
   text: string;
   price: number;
   imageUrl: string;
-  dateCreated: Date;
-  user: AdvertiserDto;
+  createdAt: number; // timestamp
+  advertiser: AdvertiserDto;
 };
 
 export enum ActionColor {

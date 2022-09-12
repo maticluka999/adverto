@@ -23,8 +23,8 @@ export default function (app: App) {
   app
     .stack(Database)
     .stack(S3Bucket)
-    .stack(ApiGateway)
     .stack(CognitoUserPool)
+    .stack(ApiGateway)
     .stack(GoogleIdentityProvider)
     .stack(CognitoUserPoolClient)
     .stack(CognitoIdentityPool)

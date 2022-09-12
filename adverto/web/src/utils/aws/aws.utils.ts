@@ -1,8 +1,8 @@
-import { API, Auth, Signer } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 import AWS from 'aws-sdk';
 import { LoginsMap } from 'aws-sdk/clients/cognitoidentity';
 import { CredentialsOptions } from 'aws-sdk/lib/credentials';
-import { HttpMethod } from '../http-method.enum';
+import { PreferredMFA, User } from '../../types';
 
 const cognitoIdentityProvider = `cognito-idp.${process.env.REACT_APP_AWS_REGION}.amazonaws.com/${process.env.REACT_APP_USER_POOL_ID}`;
 
@@ -38,49 +38,25 @@ export async function getAWSCredentials(idTokenJwt?: string) {
   );
 }
 
-export async function executeSignedApi(
-  method: HttpMethod,
-  route: string,
-  headers?: Record<string, string>
-) {
-  let idToken;
+export async function getUser(): Promise<User> {
+  const currentSession = await Auth.currentSession();
+  const idTokenPayload = currentSession.getIdToken().payload;
 
-  try {
-    idToken = (await Auth.currentSession()).getIdToken();
-    console.log(idToken);
-  } catch (err) {
-    console.log(err);
-  }
-
-  await getAWSCredentials(idToken?.getJwtToken());
-
-  const request = {
-    method,
-    url: `${process.env.REACT_APP_API_URL}${route}`,
-    headers,
+  const attributes = {
+    sub: idTokenPayload.sub,
+    email: idTokenPayload.email,
+    givenName: idTokenPayload.given_name,
+    familyName: idTokenPayload.family_name,
+    phoneNumber: idTokenPayload.phone_number,
+    phoneNumberVerified: idTokenPayload.phone_number_verified,
+    picture: idTokenPayload.picture,
   };
 
-  const access_info = {
-    region: process.env.REACT_APP_AWS_REGION,
-    // AWS service that is called (default: 'execute-api' -- AWS API Gateway)
-    service: 'execute-api',
-    access_key: AWS.config.credentials?.accessKeyId,
-    secret_key: AWS.config.credentials?.secretAccessKey,
-    session_token: AWS.config.credentials?.sessionToken,
+  const preferredMFA =
+    PreferredMFA[idTokenPayload.preferredMFA as keyof typeof PreferredMFA];
+
+  return {
+    attributes,
+    preferredMFA,
   };
-
-  const signedRequest = Signer.sign(request, access_info);
-
-  switch (method) {
-    case HttpMethod.GET:
-      return API.get('api', route, signedRequest);
-    case HttpMethod.POST:
-      return API.post('api', route, signedRequest);
-    case HttpMethod.PUT:
-      return API.put('api', route, signedRequest);
-    case HttpMethod.DELETE:
-      return API.del('api', route, signedRequest);
-    default:
-      console.log('invalid http method');
-  }
 }

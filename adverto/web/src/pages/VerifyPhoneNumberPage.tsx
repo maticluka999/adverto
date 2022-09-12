@@ -95,7 +95,7 @@ function VerifyPhoneNumberPage() {
                     Verify
                   </button>
                   <button
-                    className='mt-3 text-blue-500 hover:underline'
+                    className='mt-3 text-blue-600 hover:underline'
                     onClick={(e) => {
                       e.preventDefault();
                       sendCode();

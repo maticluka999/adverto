@@ -1,12 +1,3 @@
-export type Advertiser = {
-  pk: string; // username (uuid)
-  sk: 'info';
-  givenName: string;
-  familyName: string;
-  email: string;
-  profilePicture: string;
-};
-
 export type Ad = {
   pk: string; // advertiserUsername (uuid)
   sk: string; // ad#id (uuid)
@@ -14,4 +5,20 @@ export type Ad = {
   gsi1sk: number; // createdAt (timestamp)
   title: string;
   text: string;
+};
+
+export type AdDto = {
+  id: string;
+  createdAt: number; // timestamp
+  title: string;
+  text: string;
+  advertiser: AdvertiserDto;
+};
+
+export type AdvertiserDto = {
+  sub: string;
+  email: string;
+  givenName: string;
+  familyName: string;
+  profilePicture: string;
 };

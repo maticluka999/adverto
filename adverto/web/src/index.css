@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply bg-slate-100;
+  }
+}
+
 @layer components {
   .input {
     @apply border-2 border-gray-400 rounded leading-5

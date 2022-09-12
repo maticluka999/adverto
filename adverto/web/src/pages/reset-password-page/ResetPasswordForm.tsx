@@ -113,7 +113,7 @@ function ResetPasswordForm({ username }: Props) {
               <div className='flex flex-col items-center justify-center'>
                 <button className='btnPrimary w-44'>Reset password</button>
                 <button
-                  className='mt-3 text-blue-500 hover:underline'
+                  className='mt-3 text-blue-600 hover:underline'
                   onClick={(e) => {
                     e.preventDefault();
                     resend();

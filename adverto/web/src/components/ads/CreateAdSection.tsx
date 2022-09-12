@@ -1,25 +1,43 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Ad } from '../../types';
+import ErrorLabel from '../ErrorLabel';
+import Input from '../Input';
 import LoadingSpinner from '../LoadingSpinner';
+import { ReactComponent as XMark } from './../../assets/icons/x-mark.svg';
+import * as yup from 'yup';
+import { HttpMethod } from '../../utils/http-method.enum';
+import { API } from 'aws-amplify';
+import { getUser } from '../../utils/aws/aws.utils';
 
 type Props = {
   onCreateAd: (ad: Ad) => void;
 };
 
+const validationSchema = yup.object({
+  title: yup.string().required('Title is required'),
+  text: yup.string().required('Text is required'),
+  price: yup
+    .number()
+    .transform((value) => (isNaN(value) ? undefined : value))
+    .required('Price is required'),
+});
+
 function CreateAdSection({ onCreateAd }: Props) {
-  const postTextTextArea = useRef<HTMLTextAreaElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
-  const [postText, setPostText] = useState('');
-  const [fileNameText, setFileNameText] = useState('');
-  const [errorText, setErrorText] = useState('');
+  const [file, setFile] = useState<File>();
   const [fetching, setFetching] = useState(false);
+  const [errorText, setErrorText] = useState('');
 
-  const postTextChangedHandler = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setPostText(event.target.value);
-  };
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
 
   const fileInputHandler = () => {
     const file: File = fileInput.current!.files![0];
@@ -29,79 +47,138 @@ function CreateAdSection({ onCreateAd }: Props) {
       return;
     }
 
-    setFileNameText(file.name);
+    setFile(file);
     setErrorText('');
   };
 
   const openFileChooser = () => {
+    console.log('asd');
     removeCurrentFile();
     fileInput.current?.click();
   };
 
   const removeCurrentFile = () => {
     fileInput.current!.value = '';
-    setFileNameText('');
+    setFile(undefined);
   };
 
   const [formOpen, setFormOpen] = useState(false);
 
-  const createAd = () => {};
+  const onSubmit = async (data: Record<string, string>) => {
+    setErrorText('');
+
+    const body = {
+      title: data.title,
+      text: data.text,
+      price: data.price,
+    };
+
+    setFetching(true);
+    const response = await API.post('api', '/ads', { body });
+    setFetching(false);
+
+    const ad = { ...response, user: { ...(await getUser()).attributes } };
+
+    onCreateAd(ad);
+  };
 
   return (
     <div className='flex flex-col items-center justify-center'>
       {!formOpen ? (
         <button
-          className='justify-center btnGreenWhite m-4 mb-3'
+          className='justify-center btnPrimary m-4 mb-3'
           onClick={() => setFormOpen(true)}
         >
-          Create new ad
+          Publish new ad
         </button>
       ) : (
-        <div className='flex flex-col bg-white mt-5 w-screen md:w-[614px] rounded shadow-lg p-4 pb-3'>
-          <div className='flex items-start'>
-            <div className='flex flex-col flex-grow'>
-              <button onClick={() => setFormOpen(false)}>close</button>
-              <p className='ml-3'>{fileNameText}</p>
-              <p className='text-red-600 ml-3'>{errorText}</p>
-              <div className='flex items-center self-end'>
-                {!fetching && (
+        <div className='flex flex-col bg-white mt-5 w-screen md:w-[630px] rounded shadow-lg p-4 pb-3'>
+          <form
+            className='flex flex-col flex-grow'
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <button
+              className='self-end text-blue-600 mb-4'
+              onClick={() => setFormOpen(false)}
+            >
+              <XMark />
+            </button>
+            <div className='lg:w-[350px]'>
+              <Input
+                {...register('title')}
+                text='Title:'
+                additionalTextClassName={'w-[50px]'}
+              />
+            </div>
+            <ErrorLabel
+              additinalClassName='w-56'
+              text={errors.title?.message}
+            />
+            <Input
+              {...register('text')}
+              text='Text:'
+              additionalTextClassName={'w-[50px]'}
+            />
+            <ErrorLabel additinalClassName='w-56' text={errors.text?.message} />
+            <div className='w-[200px]'>
+              <Input
+                {...register('price')}
+                type='number'
+                text='Price:'
+                additionalTextClassName={'w-[50px]'}
+                additionalInputClassName={'w-20'}
+              />
+            </div>
+            <ErrorLabel
+              additinalClassName='w-56'
+              text={errors.price?.message}
+            />
+            <p className='text-red-600 ml-3'>{errorText}</p>
+            <div className='flex items-center self-end'>
+              {!fetching && (
+                <>
                   <button
-                    className='btnWhiteGreen mt-3 mr-4'
-                    onClick={openFileChooser}
-                    hidden={!!fileNameText}
+                    className='btnSecondary mt-3 mr-4'
+                    onClick={(e) => {
+                      e.preventDefault();
+                      openFileChooser();
+                    }}
+                    hidden={!!file}
                   >
-                    <input
-                      type='file'
-                      accept='.png,.jpg,.jpeg'
-                      ref={fileInput}
-                      onInput={fileInputHandler}
-                      hidden
-                    />
                     Upload image
                   </button>
+                  <input
+                    type='file'
+                    accept='.png,.jpg,.jpeg'
+                    ref={fileInput}
+                    onInput={fileInputHandler}
+                    hidden
+                  />
+                </>
+              )}
+              {file && !fetching && (
+                <button
+                  className='text-blue-600 hover:underline mt-3 mr-4'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    removeCurrentFile();
+                  }}
+                >
+                  Remove image
+                </button>
+              )}
+              <div className='flex items-center mt-3 mr-3'>
+                {fetching ? (
+                  <div className='flex items-center justify-center w-20'>
+                    <LoadingSpinner />
+                  </div>
+                ) : (
+                  <button className='btnPrimary'>Publish</button>
                 )}
-                {fileNameText && !fetching && (
-                  <button
-                    className='btnWhiteRed mt-3 mr-4'
-                    onClick={removeCurrentFile}
-                  >
-                    Remove image
-                  </button>
-                )}
-                <div className='flex items-center mt-3 mr-3'>
-                  {fetching ? (
-                    <div className='flex items-center justify-center w-20'>
-                      <LoadingSpinner />
-                    </div>
-                  ) : (
-                    <button className='btnGreenWhite' onClick={createAd}>
-                      Create
-                    </button>
-                  )}
-                </div>
               </div>
             </div>
-          </div>
+          </form>
+          {file && <img className='mt-3' src={URL.createObjectURL(file)} />}
         </div>
       )}
     </div>

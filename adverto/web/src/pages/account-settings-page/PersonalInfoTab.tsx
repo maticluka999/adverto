@@ -177,7 +177,7 @@ function PersonalInfoTab({ user, setUser }: Props) {
         </div>
         {file ? (
           <button
-            className='ml-8 text-blue-500 text-sm hover:underline'
+            className='ml-8 text-blue-600 text-sm hover:underline'
             onClick={() => setFile(undefined)}
           >
             Cancel
@@ -264,7 +264,7 @@ function PersonalInfoTab({ user, setUser }: Props) {
                   <div>Phone number not verified</div>
                 </div>
                 <button
-                  className='text-blue-500 hover:underline self-end'
+                  className='text-blue-600 hover:underline self-end'
                   onClick={(e) => {
                     e.preventDefault();
                     navigate('/verify-phone-number', {

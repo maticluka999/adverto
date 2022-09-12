@@ -28,7 +28,7 @@ function ProfilePage() {
         <>
           {ads && (
             <>
-              <UserInfoSection user={ads[0].user} />
+              <UserInfoSection user={ads[0].advertiser} />
               <Ads ads={ads} onCreateAd={onCreateAd} onRemoveAd={onRemoveAd} />
             </>
           )}

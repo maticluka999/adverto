@@ -79,7 +79,7 @@ function ConfirmSignupPage() {
                 Confirm
               </button>
               <button
-                className='mt-3 text-blue-500 hover:underline'
+                className='mt-3 text-blue-600 hover:underline'
                 onClick={resend}
               >
                 Resend verification code

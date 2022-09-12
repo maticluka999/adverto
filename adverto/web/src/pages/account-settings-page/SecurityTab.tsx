@@ -27,7 +27,7 @@ function SecurityTab({ user }: Props) {
       <div className='flex flex-wrap w-full'>
         <div>Password reset:</div>
         <button
-          className='ml-4 pt-0 text-blue-500 hover:underline'
+          className='ml-4 pt-0 text-blue-600 hover:underline'
           onClick={() => {
             console.log(user.attributes.email);
             navigate('/reset-password', {

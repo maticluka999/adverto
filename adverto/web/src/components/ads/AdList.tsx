@@ -5,10 +5,9 @@ import AdItem from './AdItem';
 type Props = {
   ads: Ad[];
   onRemoveAd: (adId: string) => void;
-  user?: AdvertiserDto;
 };
 
-function AdList({ ads, onRemoveAd, user }: Props) {
+function AdList({ ads, onRemoveAd }: Props) {
   return (
     <div className='flex flex-col items-center w-full md:w-[630px]'>
       {ads.length > 0 ? (
@@ -17,14 +16,14 @@ function AdList({ ads, onRemoveAd, user }: Props) {
             <AdItem
               key={ad.id}
               ad={ad}
-              user={ad.user}
+              advertiser={ad.advertiser}
               onRemoveAd={onRemoveAd}
             />
           ))}
         </div>
       ) : (
         <div className='flex flex-col items-center bg-gray-100 p-3 rounded-xl mt-10'>
-          {user?.sub} hasn't aded anything yet.
+          No ads found.
         </div>
       )}
     </div>

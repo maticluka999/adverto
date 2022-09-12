@@ -11,7 +11,7 @@ const UserInfoSection = ({ user }: Props) => {
         {user ? (
           <div className='flex flex-row'>
             <div className='flex flex-col'>
-              <UserImage src={user.profilePicture} width={100} height={100} />
+              <UserImage src={user.picture} width={100} height={100} />
             </div>
             <div className='w-full md:w-500px md:ml-20'>
               <p className='text-xl md:text-2xl text-center md:text-left mt-2 md:ml-2'>

@@ -8,12 +8,12 @@ const ad1: Ad = {
   price: 200,
   imageUrl:
     'https://thumbor.forbes.com/thumbor/fit-in/900x510/https://www.forbes.com/advisor/wp-content/uploads/2021/08/download-23.jpg',
-  dateCreated: new Date(2022, 4, 27),
-  user: {
+  createdAt: new Date(2022, 4, 27).getTime(),
+  advertiser: {
     sub: '1',
     givenName: 'John',
     familyName: 'Doe',
-    profilePicture: '',
+    picture: '',
     email: 'johndoe@example.com',
   },
 };
@@ -25,12 +25,12 @@ const ad2: Ad = {
   text: 'This is ad 2',
   price: 200,
   imageUrl: '',
-  dateCreated: new Date(2022, 4, 27),
-  user: {
+  createdAt: new Date(2022, 4, 27).getTime(),
+  advertiser: {
     sub: '2',
     givenName: 'John',
     familyName: 'Doe',
-    profilePicture: '',
+    picture: '',
     email: 'johndoe@example.com',
   },
 };
@@ -43,12 +43,12 @@ const ad3: Ad = {
   price: 200,
   imageUrl:
     'https://thumbor.forbes.com/thumbor/fit-in/900x510/https://www.forbes.com/advisor/wp-content/uploads/2021/08/download-23.jpg',
-  dateCreated: new Date(2022, 4, 27),
-  user: {
+  createdAt: new Date(2022, 4, 27).getTime(),
+  advertiser: {
     sub: '1',
     givenName: 'John',
     familyName: 'Doe',
-    profilePicture: '',
+    picture: '',
     email: 'johndoe@example.com',
   },
 };
@@ -60,12 +60,12 @@ const ad4: Ad = {
   text: 'This is ad 4',
   price: 200,
   imageUrl: '',
-  dateCreated: new Date(2022, 4, 27),
-  user: {
+  createdAt: new Date(2022, 4, 27).getTime(),
+  advertiser: {
     sub: '1',
     givenName: 'John',
     familyName: 'Doe',
-    profilePicture: '',
+    picture: '',
     email: 'johndoe@example.com',
   },
 };

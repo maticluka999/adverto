@@ -20,11 +20,11 @@ function AccountSettingsTabButton({
   return (
     <button
       className={`flex flex-1 flex-col items-center pt-3 ${
-        isSelected && 'text-blue-500 border-b-2 border-blue-500'
+        isSelected && 'text-blue-600 border-b-2 border-blue-500'
       }`}
       onClick={() => setSelectedTab(tab)}
     >
-      <Icon className={`w-5 h-5 ${isSelected && 'text-blue-500'}`} />
+      <Icon className={`w-5 h-5 ${isSelected && 'text-blue-600'}`} />
       <div>{text}</div>
     </button>
   );

@@ -86,7 +86,7 @@ function LoginPage() {
         </div>
         {!fetching && (
           <Link
-            className='mb-3 text-blue-500 hover:underline'
+            className='mb-3 text-blue-600 hover:underline'
             to='/reset-password'
             state={{ email: '', emailInputDisabled: false }}
           >
