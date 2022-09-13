@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Ad } from '../../types';
+import { Ad, AdvertiserDto } from '../../types';
 import ErrorLabel from '../ErrorLabel';
 import Input from '../Input';
 import LoadingSpinner from '../LoadingSpinner';
@@ -71,15 +71,48 @@ function CreateAdSection({ onCreateAd }: Props) {
       title: data.title,
       text: data.text,
       price: data.price,
+      imageContentType: file?.type,
     };
 
     setFetching(true);
-    const response = await API.post('api', '/ads', { body });
-    setFetching(false);
+    let response;
 
-    const ad = { ...response, user: { ...(await getUser()).attributes } };
+    try {
+      response = await API.post('api', '/ads', { body });
 
-    onCreateAd(ad);
+      if (file) {
+        const formData = new FormData();
+        formData.append('Content-Type', file.type);
+        Object.entries(response.presignedPostData.fields).forEach(
+          ([k, v]: any[]) => {
+            console.log(k, v);
+            formData.append(k, v);
+          }
+        );
+        formData.append('file', file); // The file has to be the last element
+
+        const uploadResponse = await fetch(response.presignedPostData.url, {
+          method: 'POST',
+          // headers: [['Content-Type', 'multipart/form-data']],
+          body: formData,
+        });
+
+        console.log(uploadResponse);
+      }
+
+      const ad = {
+        ...response.ad,
+        advertiser: (await getUser()).attributes,
+      };
+      console.log(ad);
+      onCreateAd(ad);
+      setFetching(false);
+    } catch (error) {
+      setFetching(false);
+      console.error(error);
+      alert('Failed to publish ad.');
+      return;
+    }
   };
 
   return (

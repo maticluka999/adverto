@@ -12,6 +12,7 @@ export type AdDto = {
   createdAt: number; // timestamp
   title: string;
   text: string;
+  price: number;
   advertiser: AdvertiserDto;
 };
 

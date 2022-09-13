@@ -54,9 +54,11 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const adDtos = ads!.map((ad) => {
     const a = {
       id: ad.sk,
-      createdAt: ad.gsi1sk,
       title: ad.title,
       text: ad.text,
+      price: ad.price,
+      createdAt: ad.gsi1sk,
+      imageUrl: ad.imageUrl,
       advertiser: advertisers.find((item) => item.sub === ad.pk),
     };
 

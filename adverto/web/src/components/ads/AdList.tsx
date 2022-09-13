@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { Ad, AdvertiserDto } from '../../types';
+import { Ad } from '../../types';
 import AdItem from './AdItem';
 
 type Props = {
@@ -9,18 +8,13 @@ type Props = {
 
 function AdList({ ads, onRemoveAd }: Props) {
   return (
-    <div className='flex flex-col items-center w-full md:w-[630px]'>
+    <div className='flex flex-col items-center w-full md:w-[630px] mb-20'>
       {ads.length > 0 ? (
-        <div className='flex flex-col items-center flex-grow'>
+        <>
           {ads.map((ad) => (
-            <AdItem
-              key={ad.id}
-              ad={ad}
-              advertiser={ad.advertiser}
-              onRemoveAd={onRemoveAd}
-            />
+            <AdItem key={ad.id} ad={ad} onRemoveAd={onRemoveAd} />
           ))}
-        </div>
+        </>
       ) : (
         <div className='flex flex-col items-center bg-gray-100 p-3 rounded-xl mt-10'>
           No ads found.

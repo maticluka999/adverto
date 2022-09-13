@@ -1,29 +1,84 @@
-import { APIGatewayEvent, APIGatewayProxyHandlerV2 } from 'aws-lambda';
+import { APIGatewayEvent } from 'aws-lambda';
 import * as aws from 'aws-sdk';
-import { Authorizer } from 'aws-sdk/clients/apigatewayv2';
+import { S3 } from 'aws-sdk';
 import { randomUUID } from 'crypto';
+import * as yup from 'yup';
+
+function extractIdentityIdFromEvent(event: APIGatewayEvent) {
+  const authorizer = event.requestContext.authorizer!;
+  return authorizer.iam.cognitoIdentity.identityId;
+}
 
 function extractSubFromEvent(event: APIGatewayEvent) {
   const authorizer = event.requestContext.authorizer!;
   return authorizer.iam.cognitoIdentity.amr[2].split('CognitoSignIn:')[1];
 }
 
+const validationSchema = yup.object({
+  title: yup.string().required('Title is required'),
+  text: yup.string().required('Text is required'),
+  price: yup
+    .number()
+    .transform((value) => (isNaN(value) ? undefined : value))
+    .required('Price is required'),
+  imageContentType: yup
+    .string()
+    .oneOf(['image/png', 'image/jpg', 'image/jpeg']),
+});
+
 export const handler = async (event: APIGatewayEvent) => {
-  const advertiserSub = extractSubFromEvent(event);
+  const parsedBody = JSON.parse(event.body!);
+
+  // validation
+
+  try {
+    await validationSchema.validate(parsedBody);
+  } catch (error: any) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ type: error.name, message: error.message }),
+    };
+  }
+
+  const { title, text, price, imageContentType } = parsedBody;
+
+  // presigned url
+  const id = randomUUID();
+  let presignedPostData = undefined;
+
+  if (imageContentType) {
+    var s3 = new S3({ region: process.env.REGION });
+
+    const advertiserIdentityId = extractIdentityIdFromEvent(event);
+
+    const extension = imageContentType.split('/')[1];
+
+    const presignedPostParams: S3.PresignedPost.Params = {
+      Bucket: process.env.BUCKET_NAME,
+      Fields: {
+        key: `${advertiserIdentityId}/ads/${id}.${extension}`,
+      },
+      Conditions: [['eq', '$Content-Type', imageContentType]],
+      Expires: 100,
+    };
+
+    presignedPostData = s3.createPresignedPost(presignedPostParams);
+  }
+
   const client = new aws.DynamoDB.DocumentClient();
-
-  const { title, text, price } = JSON.parse(event.body!);
-
   const params: aws.DynamoDB.DocumentClient.PutItemInput = {
     TableName: process.env.TABLE_NAME!,
     Item: {
-      pk: advertiserSub,
-      sk: randomUUID(),
+      pk: extractSubFromEvent(event),
+      sk: id,
       gsi1pk: 'ad',
       gsi1sk: Date.now(),
       title,
       text,
       price,
+      imageUrl: imageContentType
+        ? `${presignedPostData!.url}/${presignedPostData!.fields.key}`
+        : undefined,
     },
   };
 
@@ -40,6 +95,18 @@ export const handler = async (event: APIGatewayEvent) => {
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(params.Item),
+    body: JSON.stringify({
+      ad: {
+        id: params.Item.sk,
+        title: params.Item.title,
+        text: params.Item.text,
+        price: params.Item.price,
+        createdAt: params.Item.gsi1sk,
+        imageUrl: params.Item.imageUrl,
+      },
+      presignedPostData,
+    }),
   };
 };
+
+function getPresignedPostURL(imageContentType: string) {}

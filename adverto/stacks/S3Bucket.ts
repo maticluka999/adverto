@@ -6,7 +6,7 @@ export function S3Bucket({ stack }: StackContext) {
   const bucket = new Bucket(stack, 'bucket', {
     cors: [
       {
-        allowedMethods: [HttpMethods.PUT],
+        allowedMethods: [HttpMethods.PUT, HttpMethods.POST],
         allowedOrigins: ['http://localhost:3000'], // DEPLOY_IMPORTANT: this must be set to proper value via console once deployed
         allowedHeaders: ['*'],
       },
