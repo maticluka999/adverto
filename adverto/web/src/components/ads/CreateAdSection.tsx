@@ -35,6 +35,7 @@ function CreateAdSection({ onCreateAd }: Props) {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
@@ -107,6 +108,7 @@ function CreateAdSection({ onCreateAd }: Props) {
       console.log(ad);
       onCreateAd(ad);
       setFetching(false);
+      resetAndHideForm();
     } catch (error) {
       setFetching(false);
       console.error(error);
@@ -115,12 +117,24 @@ function CreateAdSection({ onCreateAd }: Props) {
     }
   };
 
+  const resetAndHideForm = () => {
+    setFile(undefined);
+    setValue('title', '');
+    setValue('text', '');
+    setValue('price', '');
+    setFormOpen(false);
+  };
+
   return (
     <div className='flex flex-col items-center justify-center'>
       {!formOpen ? (
         <button
           className='justify-center btnPrimary m-4 mb-3'
-          onClick={() => setFormOpen(true)}
+          onClick={() => {
+            if (!fetching) {
+              setFormOpen(true);
+            }
+          }}
         >
           Publish new ad
         </button>

@@ -25,26 +25,14 @@ export function ApiGateway({ stack }: StackContext) {
       // create ad
       'POST /ads': {
         authorizer: 'iam',
-        function: 'functions/create-ad.handler',
+        function: 'functions/ads/create-ad.handler',
       },
 
       // get all ads
-      'GET /ads': 'functions/get-ads.handler',
+      'GET /ads': 'functions/ads/get-ads.handler',
 
       // get ads by advertiser id
-      'GET /advertiser/{id}/ads': 'functions/get-advertisers-ads.handler',
-
-      // admin function
-      'GET /admin-function': {
-        authorizer: 'iam',
-        function: 'functions/some-admin-function.handler',
-      },
-
-      // advertiser funcion
-      'GET /advertiser-function': {
-        authorizer: 'iam',
-        function: 'functions/some-advertiser-function.handler',
-      },
+      'GET /advertiser/{id}/ads': 'functions/ads/get-advertisers-ads.handler',
     },
   });
 

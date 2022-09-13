@@ -67,7 +67,7 @@ const addTriggers = (stack: Stack, userPool: UserPool) => {
     'postConfirmationTrigger',
     {
       runtime: Runtime.NODEJS_16_X,
-      entry: 'services/triggers/post-confirmation-trigger.ts',
+      entry: 'services/functions/triggers/post-confirmation-trigger.ts',
       environment: {
         TABLE: db.tableName,
       },
