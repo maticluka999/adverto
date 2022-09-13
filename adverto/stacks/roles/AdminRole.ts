@@ -36,10 +36,7 @@ function addPolicyStatements(stack: Stack, adminRole: Role) {
     new PolicyStatement({
       effect: Effect.ALLOW,
       actions: ['execute-api:Invoke'],
-      resources: [
-        `${executeApiRoot}/GET/ads`,
-        `${executeApiRoot}/GET/admin-function`,
-      ],
+      resources: [`${executeApiRoot}/DELETE/ads/admin-delete/*`],
     })
   );
 }

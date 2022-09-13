@@ -32,7 +32,19 @@ export function ApiGateway({ stack }: StackContext) {
       'GET /ads': 'functions/ads/get-ads.handler',
 
       // get ads by advertiser id
-      'GET /advertiser/{id}/ads': 'functions/ads/get-advertisers-ads.handler',
+      'GET /advertisers/{id}/ads': 'functions/ads/get-advertisers-ads.handler',
+
+      // delete ad
+      'DELETE /ads/{id}': {
+        authorizer: 'iam',
+        function: 'functions/ads/delete-ad.handler',
+      },
+
+      // admin delete ad
+      'DELETE /admin-delete-ad': {
+        authorizer: 'iam',
+        function: 'functions/ads/admin-delete-ad.handler',
+      },
     },
   });
 

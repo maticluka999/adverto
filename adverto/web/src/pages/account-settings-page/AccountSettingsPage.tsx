@@ -76,7 +76,7 @@ function AccountSettingsPage() {
   };
 
   return (
-    <div className='flex justify-center h-screen bg-gray-200 p-5 md:py-10 md:pt-20'>
+    <div className='flex justify-center bg-gray-200 p-5 md:py-10 md:pt-20'>
       <div className='flex flex-col w-full md:w-[530px] bg-white'>
         {renderTabButtons()}
         {user ? (

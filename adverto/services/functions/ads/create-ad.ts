@@ -10,7 +10,7 @@ import { Ad } from 'functions/utils/model';
 import { adToAdDto } from 'functions/utils/mappers';
 import { adValidationSchema } from 'functions/utils/validationSchemas';
 
-export const handler = async (event: APIGatewayEvent) => {
+export async function handler(event: APIGatewayEvent) {
   const parsedBody = JSON.parse(event.body!);
 
   // validation
@@ -74,7 +74,7 @@ export const handler = async (event: APIGatewayEvent) => {
       presignedPostData,
     }),
   };
-};
+}
 
 function getPresignedPostData(
   imageContentType: string,
@@ -82,7 +82,7 @@ function getPresignedPostData(
   id: string
 ) {
   if (imageContentType) {
-    var s3 = new S3({ region: process.env.REGION });
+    const s3 = new S3({ region: process.env.REGION });
 
     const extension = imageContentType.split('/')[1];
 

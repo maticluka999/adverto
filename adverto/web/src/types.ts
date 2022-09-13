@@ -28,7 +28,6 @@ export type AdvertiserDto = {
 
 export type Ad = {
   id: string;
-  advertiserId: string;
   title: string;
   text: string;
   price: number;
@@ -46,4 +45,5 @@ export type Action = {
   name: string;
   execute: (params?: any) => void;
   color?: ActionColor;
+  setFetching: (fetching: boolean) => void;
 };

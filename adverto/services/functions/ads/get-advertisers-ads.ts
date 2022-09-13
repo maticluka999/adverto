@@ -1,7 +1,7 @@
-import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
+import { APIGatewayEvent } from 'aws-lambda';
 import * as aws from 'aws-sdk';
 
-export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+export async function handler(event: APIGatewayEvent) {
   const advertiserId = event.pathParameters!.id;
   const client = new aws.DynamoDB.DocumentClient();
 
@@ -22,4 +22,4 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(response.Items),
   };
-};
+}

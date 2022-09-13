@@ -38,7 +38,9 @@ function AdItem({ ad, onRemoveAd }: Props) {
           <AdActionsButton ad={ad} onRemoveAd={onRemoveAd} />
         </div>
       </div>
-      {ad.imageUrl && <img src={ad.imageUrl} alt='' />}
+      <div className='bg-black flex justify-center'>
+        {ad.imageUrl && <img src={ad.imageUrl} alt='' />}
+      </div>
       <div className='flex flex-col mt-2 mx-4'>
         <p className='text-lg font-medium'>{ad.title}</p>
         <p className='text-gray-600 text-sm'>{ad.text}</p>

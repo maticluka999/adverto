@@ -2,7 +2,6 @@ import { Ad } from '../../types';
 
 const ad1: Ad = {
   id: '1',
-  advertiserId: '1',
   title: 'Ad 1',
   text: 'This is ad 1',
   price: 200,
@@ -20,7 +19,6 @@ const ad1: Ad = {
 
 const ad2: Ad = {
   id: '2',
-  advertiserId: '2',
   title: 'Ad 2',
   text: 'This is ad 2',
   price: 200,
@@ -37,7 +35,6 @@ const ad2: Ad = {
 
 const ad3: Ad = {
   id: '3',
-  advertiserId: '1',
   title: 'Ad 3',
   text: 'This is ad 3',
   price: 200,
@@ -55,7 +52,6 @@ const ad3: Ad = {
 
 const ad4: Ad = {
   id: '4',
-  advertiserId: '1',
   title: 'Ad 4',
   text: 'This is ad 4',
   price: 200,

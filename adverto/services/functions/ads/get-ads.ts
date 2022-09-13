@@ -1,4 +1,4 @@
-import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
+import { APIGatewayEvent } from 'aws-lambda';
 import * as aws from 'aws-sdk';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
 import { adToAdDto, cognitoUserToAdvertiserDto } from 'functions/utils/mappers';
@@ -16,7 +16,7 @@ const queryParams: aws.DynamoDB.DocumentClient.QueryInput = {
   ScanIndexForward: false,
 };
 
-export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+export async function handler(event: APIGatewayEvent) {
   const client = new aws.DynamoDB.DocumentClient();
   const adsDynamoResponse = await client.query(queryParams).promise();
   const ads = adsDynamoResponse.Items!;
@@ -32,7 +32,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(adDtos),
   };
-};
+}
 
 async function getAdvertisersForAds(ads: any) {
   const subs = [...new Set(ads?.map((ad: any) => ad.pk))];
