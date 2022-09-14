@@ -25,6 +25,7 @@ function ActionsPopup({ title, toggle, actions, fetching }: Props) {
               actions.map((action, index) => {
                 return (
                   <button
+                    key={index}
                     className={
                       'h-10 mx-2' +
                       (action.color === ActionColor.RED

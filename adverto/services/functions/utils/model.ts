@@ -26,5 +26,5 @@ export type AdvertiserDto = {
   email: string;
   givenName: string;
   familyName: string;
-  picture: string;
+  picture?: string;
 };

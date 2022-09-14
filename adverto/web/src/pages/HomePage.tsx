@@ -1,8 +1,8 @@
-import { API, Auth } from 'aws-amplify';
+import { API } from 'aws-amplify';
 import { useEffect, useState } from 'react';
 import Ads from '../components/ads/Ads';
-import { testAds } from '../components/ads/test-ads';
 import { Ad } from '../types';
+import { getAWSCredentials } from '../utils/aws/aws.utils';
 
 function HomePage() {
   const [ads, setAds] = useState<Ad[]>();
@@ -10,8 +10,9 @@ function HomePage() {
   useEffect(() => {
     const fetchAds = async () => {
       const response = await API.get('api', '/ads', {});
-      console.log(response);
       setAds(response);
+
+      console.log(await getAWSCredentials());
     };
 
     fetchAds();

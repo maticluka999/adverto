@@ -4,9 +4,9 @@ import AccountSettingsTabButton from './AccountSettingsTabButton';
 import { useEffect, useState } from 'react';
 import PersonalInfoTab from './PersonalInfoTab';
 import SecurityTab from './SecurityTab';
-import { Auth } from 'aws-amplify';
-import { PreferredMFA, User } from '../../types';
+import { User } from '../../types';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { getUser } from '../../utils/aws/aws.utils';
 
 export enum AccountSettingsPageTab {
   PERSONAL_INFO = 'personal_info',
@@ -21,24 +21,7 @@ function AccountSettingsPage() {
 
   useEffect(() => {
     const setupUser = async () => {
-      const currentUser = await Auth.currentAuthenticatedUser();
-      console.log(currentUser);
-      const attributes = {
-        sub: currentUser.attributes.sub,
-        email: currentUser.attributes.email,
-        givenName: currentUser.attributes.given_name,
-        familyName: currentUser.attributes.family_name,
-        phoneNumber: currentUser.attributes.phone_number,
-        phoneNumberVerified: currentUser.attributes.phone_number_verified,
-        picture: currentUser.attributes.picture,
-      };
-      const preferredMFA =
-        PreferredMFA[currentUser.preferredMFA as keyof typeof PreferredMFA];
-      const user = {
-        attributes,
-        preferredMFA,
-      };
-      setUser(user);
+      setUser(await getUser());
     };
 
     setupUser();

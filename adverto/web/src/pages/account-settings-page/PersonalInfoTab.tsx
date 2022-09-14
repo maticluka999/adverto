@@ -95,9 +95,18 @@ function PersonalInfoTab({ user, setUser }: Props) {
     );
     // @ts-ignore
     const identityId = AWS.config.credentials._identityId;
-    const key = `${identityId}/profile_picture.${getFileExtension(file!)}`;
-    const s3response = await s3.upload(file!, key);
-    console.log(s3response);
+    const key = `profile-pictures/${identityId}.${getFileExtension(file!)}`;
+
+    let s3response;
+
+    try {
+      s3response = await s3.upload(file!, key);
+      console.log(s3response);
+    } catch (error) {
+      console.log('asd');
+      setUpdatingProfilePic(false);
+      return;
+    }
 
     const user = await Auth.currentAuthenticatedUser();
 

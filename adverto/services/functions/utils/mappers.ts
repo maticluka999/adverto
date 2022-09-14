@@ -25,8 +25,8 @@ export function cognitoUserToAdvertiserDto(
     familyName: user.Attributes!.find((item) => item.Name === 'family_name')![
       'Value'
     ]!,
-    picture: user.Attributes!.find((item) => item.Name === 'picture')![
+    picture: user.Attributes!.find((item) => item.Name === 'picture')?.[
       'Value'
-    ]!,
+    ],
   };
 }

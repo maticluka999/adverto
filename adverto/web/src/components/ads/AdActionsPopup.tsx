@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify';
 import { useEffect, useState } from 'react';
-import { Ad, Action, ActionColor } from '../../types';
+import { Ad, Action, ActionColor, UserRole } from '../../types';
 import { getUser } from '../../utils/aws/aws.utils';
 import ActionsPopup from '../ActionsPopup';
 
@@ -19,11 +19,26 @@ function AdActionsPopup({ ad, toggle, onRemoveAd }: Props) {
   const removeAd = async () => {
     setFetching(true);
 
-    try {
-      await API.del('api', `/ads/${ad.id}`, {});
-      onRemoveAd(ad.id);
-    } catch (error) {
-      console.error(error);
+    const user = await getUser();
+
+    if (user.roles.includes(UserRole.ADMIN)) {
+      try {
+        await API.del(
+          'api',
+          `/admin-delete-ad?pk=${ad.advertiser.sub}&sk=${ad.id}`,
+          {}
+        );
+        onRemoveAd(ad.id);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      try {
+        await API.del('api', `/ads/${ad.id}`, {});
+        onRemoveAd(ad.id);
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     setFetching(false);
@@ -32,7 +47,6 @@ function AdActionsPopup({ ad, toggle, onRemoveAd }: Props) {
   useEffect(() => {
     const generateActions = async () => {
       const user = await getUser();
-
       const actions: Action[] = [];
 
       if (ad.advertiser.sub === user.attributes.sub) {
@@ -45,7 +59,10 @@ function AdActionsPopup({ ad, toggle, onRemoveAd }: Props) {
         actions.push(editAdAction);
       }
 
-      if (ad.advertiser.sub === user.attributes.sub) {
+      if (
+        ad.advertiser.sub === user.attributes.sub ||
+        user.roles.includes(UserRole.ADMIN)
+      ) {
         const removeAdAction = {
           name: 'Remove',
           execute: removeAd,

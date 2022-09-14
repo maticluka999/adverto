@@ -46,16 +46,16 @@ function addPolicyStatements(stack: Stack, advertiserRole: Role) {
   );
 
   const bucket = use(S3Bucket);
-  const principalsFolder = `${bucket.bucketArn}/\${cognito-identity.amazonaws.com:sub}`;
+  const principalsProfilePictureWithoutExtension = `${bucket.bucketArn}/profile-pictures/\${cognito-identity.amazonaws.com:sub}`;
 
   advertiserRole.addToPolicy(
     new PolicyStatement({
       effect: Effect.ALLOW,
       actions: ['s3:PutObject'],
       resources: [
-        `${principalsFolder}/profile_picture.png`,
-        `${principalsFolder}/profile_picture.jpg`,
-        `${principalsFolder}/profile_picture.jpeg`,
+        `${principalsProfilePictureWithoutExtension}.png`,
+        `${principalsProfilePictureWithoutExtension}.jpg`,
+        `${principalsProfilePictureWithoutExtension}.jpeg`,
       ],
     })
   );

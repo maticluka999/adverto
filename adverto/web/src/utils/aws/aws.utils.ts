@@ -2,7 +2,7 @@ import { Auth } from 'aws-amplify';
 import AWS from 'aws-sdk';
 import { LoginsMap } from 'aws-sdk/clients/cognitoidentity';
 import { CredentialsOptions } from 'aws-sdk/lib/credentials';
-import { PreferredMFA, User } from '../../types';
+import { PreferredMFA, User, UserRole } from '../../types';
 
 const cognitoIdentityProvider = `cognito-idp.${process.env.REACT_APP_AWS_REGION}.amazonaws.com/${process.env.REACT_APP_USER_POOL_ID}`;
 
@@ -40,7 +40,9 @@ export async function getAWSCredentials(idTokenJwt?: string) {
 
 export async function getUser(): Promise<User> {
   const currentSession = await Auth.currentSession();
-  const idTokenPayload = currentSession.getIdToken().payload;
+  const idToken = currentSession.getIdToken();
+  console.log(idToken);
+  const idTokenPayload = idToken.payload;
 
   const attributes = {
     sub: idTokenPayload.sub,
@@ -55,8 +57,23 @@ export async function getUser(): Promise<User> {
   const preferredMFA =
     PreferredMFA[idTokenPayload.preferredMFA as keyof typeof PreferredMFA];
 
+  const roles: UserRole[] = [];
+
+  idToken.payload['cognito:roles'].forEach((role: string) => {
+    if (role.includes('admin')) {
+      roles.push(UserRole.ADMIN);
+    }
+
+    if (role.includes('advertiser')) {
+      roles.push(UserRole.ADVERTISER);
+    }
+  });
+
+  console.log(roles);
+
   return {
     attributes,
     preferredMFA,
+    roles,
   };
 }

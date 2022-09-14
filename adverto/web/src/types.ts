@@ -13,17 +13,23 @@ export type UserAttributes = {
   picture: string;
 };
 
+export enum UserRole {
+  ADVERTISER = 'advertiser',
+  ADMIN = 'admin',
+}
+
 export type User = {
   attributes: UserAttributes;
   preferredMFA: PreferredMFA;
+  roles: UserRole[];
 };
 
 export type AdvertiserDto = {
   sub: string;
+  email: string;
   givenName: string;
   familyName: string;
-  picture: string;
-  email: string;
+  picture?: string;
 };
 
 export type Ad = {

@@ -3,7 +3,6 @@ import {
   CfnIdentityPool,
   CfnIdentityPoolRoleAttachment,
 } from 'aws-cdk-lib/aws-cognito';
-import { ApiGateway } from './ApiGateway';
 import { CognitoUserPool } from './CognitoUserPool';
 import { CognitoUserPoolClient } from './CognitoUserPoolClient';
 import constants from './constants';

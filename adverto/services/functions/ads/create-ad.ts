@@ -2,10 +2,7 @@ import { APIGatewayEvent } from 'aws-lambda';
 import * as aws from 'aws-sdk';
 import { S3 } from 'aws-sdk';
 import { randomUUID } from 'crypto';
-import {
-  extractIdentityIdFromEvent,
-  extractSubFromEvent,
-} from 'functions/utils/auth.utils';
+import { extractSubFromEvent } from 'functions/utils/auth.utils';
 import { Ad } from 'functions/utils/model';
 import { adToAdDto } from 'functions/utils/mappers';
 import { adValidationSchema } from 'functions/utils/validationSchemas';
@@ -29,7 +26,7 @@ export async function handler(event: APIGatewayEvent) {
   const id = randomUUID();
   let presignedPostData = getPresignedPostData(
     imageContentType,
-    extractIdentityIdFromEvent(event),
+    extractSubFromEvent(event),
     id
   );
 
@@ -78,7 +75,7 @@ export async function handler(event: APIGatewayEvent) {
 
 function getPresignedPostData(
   imageContentType: string,
-  advertiserIdentityId: string,
+  advertiserSub: string,
   id: string
 ) {
   if (imageContentType) {
@@ -89,7 +86,7 @@ function getPresignedPostData(
     const presignedPostParams: S3.PresignedPost.Params = {
       Bucket: process.env.BUCKET_NAME,
       Fields: {
-        key: `${advertiserIdentityId}/ads/${id}.${extension}`,
+        key: `/ads/${advertiserSub}/${id}.${extension}`,
       },
       Conditions: [['eq', '$Content-Type', imageContentType]],
       Expires: 100,

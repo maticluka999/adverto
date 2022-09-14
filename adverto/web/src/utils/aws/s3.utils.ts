@@ -19,11 +19,11 @@ export class S3Client {
       Body: file,
     };
 
-    return new Promise<S3.ManagedUpload.SendData>((resolve) => {
+    return new Promise<S3.ManagedUpload.SendData>((resolve, reject) => {
       this.s3.upload(params, (err: Error, data: S3.ManagedUpload.SendData) => {
         if (err) {
           console.log(err);
-          throw new Error('Failed to upload the image.');
+          reject('Failed to upload the image.');
         }
 
         resolve(data);
