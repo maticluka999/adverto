@@ -1,15 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useRef, useState } from 'react';
+import { API } from 'aws-amplify';
+import { useContext, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Ad, AdvertiserDto } from '../../types';
+import * as yup from 'yup';
+import AuthContext from '../../context/auth-context';
+import { Ad } from '../../types';
 import ErrorLabel from '../ErrorLabel';
 import Input from '../Input';
 import LoadingSpinner from '../LoadingSpinner';
 import { ReactComponent as XMark } from './../../assets/icons/x-mark.svg';
-import * as yup from 'yup';
-import { HttpMethod } from '../../utils/http-method.enum';
-import { API } from 'aws-amplify';
-import { getUser } from '../../utils/aws/aws.utils';
 
 type Props = {
   onCreateAd: (ad: Ad) => void;
@@ -25,6 +24,7 @@ const validationSchema = yup.object({
 });
 
 function CreateAdSection({ onCreateAd }: Props) {
+  const { user } = useContext(AuthContext);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState<File>();
@@ -79,7 +79,7 @@ function CreateAdSection({ onCreateAd }: Props) {
     let response;
 
     try {
-      response = await API.post('api', '/ads', { body });
+      response = await API.post('api', '/commercials', { body });
 
       if (file) {
         const formData = new FormData();
@@ -103,7 +103,7 @@ function CreateAdSection({ onCreateAd }: Props) {
 
       const ad = {
         ...response.ad,
-        advertiser: (await getUser()).attributes,
+        advertiser: user!.attributes,
       };
       console.log(ad);
       onCreateAd(ad);
@@ -126,7 +126,7 @@ function CreateAdSection({ onCreateAd }: Props) {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center'>
+    <div className='flex flex-col items-center justify-center mt-5'>
       {!formOpen ? (
         <button
           className='justify-center btnPrimary m-4 mb-3'

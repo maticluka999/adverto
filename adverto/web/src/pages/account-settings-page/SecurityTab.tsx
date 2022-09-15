@@ -1,13 +1,12 @@
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Switch from '../../components/Switch';
+import AuthContext from '../../context/auth-context';
 import { PreferredMFA, User } from '../../types';
 import { ReactComponent as InformationCircle } from './../../assets/icons/information-circle.svg';
 
-type Props = {
-  user: User;
-};
-
-function SecurityTab({ user }: Props) {
+function SecurityTab() {
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   return (
@@ -16,8 +15,8 @@ function SecurityTab({ user }: Props) {
       <div className='w-full mb-2'>Two factor authentication:</div>
       <Switch
         text='SMS two factor authentication'
-        disabled={!user.attributes.phoneNumberVerified}
-        checked={user.preferredMFA === PreferredMFA.SMS}
+        disabled={!user!.attributes.phoneNumberVerified}
+        checked={user!.preferredMFA === PreferredMFA.SMS}
       />
       <div className='flex items-center self-end text-sm mt-1'>
         <InformationCircle className='w-6 h-6 mr-1' />
@@ -29,9 +28,12 @@ function SecurityTab({ user }: Props) {
         <button
           className='ml-4 pt-0 text-blue-600 hover:underline'
           onClick={() => {
-            console.log(user.attributes.email);
+            console.log(user!.attributes.email);
             navigate('/reset-password', {
-              state: { email: user.attributes.email, emailInputDisabled: true },
+              state: {
+                email: user!.attributes.email,
+                emailInputDisabled: true,
+              },
             });
           }}
         >

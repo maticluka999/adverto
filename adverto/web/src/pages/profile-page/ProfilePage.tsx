@@ -1,16 +1,28 @@
-import { useState } from 'react';
-import AdList from '../../components/ads/AdList';
+import { API } from 'aws-amplify';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import Ads from '../../components/ads/Ads';
-import CreateAdSection from '../../components/ads/CreateAdSection';
-import { testAds } from '../../components/ads/test-ads';
-import LoadingSpinner from '../../components/LoadingSpinner';
 import PageNotFound from '../../components/PageNotFound';
 import { Ad } from '../../types';
 import UserInfoSection from './UserInfoSection';
 
 function ProfilePage() {
-  const [ads, setAds] = useState<Ad[]>(testAds);
+  const { sub } = useParams();
   const [pageNotFound, setPageNotFound] = useState(false);
+  const [ads, setAds] = useState<Ad[]>();
+
+  useEffect(() => {
+    const fetchAds = async () => {
+      const response = await API.get(
+        'api',
+        `/commercials?advertiserSub=${sub}`,
+        {}
+      );
+      setAds(response);
+    };
+
+    fetchAds();
+  }, []);
 
   const onCreateAd = (ad: Ad) => {
     setAds([ad, ...ads!]);
@@ -26,12 +38,8 @@ function ProfilePage() {
         <PageNotFound />
       ) : (
         <>
-          {ads && (
-            <>
-              <UserInfoSection user={ads[0].advertiser} />
-              <Ads ads={ads} onCreateAd={onCreateAd} onRemoveAd={onRemoveAd} />
-            </>
-          )}
+          {ads && <UserInfoSection user={ads[0].advertiser} />}
+          <Ads ads={ads} onCreateAd={onCreateAd} onRemoveAd={onRemoveAd} />
         </>
       )}
     </div>

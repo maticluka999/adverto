@@ -1,4 +1,6 @@
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import AuthContext from '../../context/auth-context';
 import { Ad } from '../../types';
 import { dateTimeFormatOptions } from '../../utils/date-time-format-options';
 import UserImage from '../UserImage';
@@ -10,6 +12,7 @@ type Props = {
 };
 
 function AdItem({ ad, onRemoveAd }: Props) {
+  const { user } = useContext(AuthContext);
   const locale = 'en-US';
 
   return (
@@ -35,7 +38,7 @@ function AdItem({ ad, onRemoveAd }: Props) {
           </div>
         </div>
         <div className='mt-4'>
-          <AdActionsButton ad={ad} onRemoveAd={onRemoveAd} />
+          {user && <AdActionsButton ad={ad} onRemoveAd={onRemoveAd} />}
         </div>
       </div>
       <div className='bg-black flex justify-center'>

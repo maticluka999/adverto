@@ -6,7 +6,6 @@ import {
 import { CognitoUserPool } from './CognitoUserPool';
 import { CognitoUserPoolClient } from './CognitoUserPoolClient';
 import constants from './constants';
-import { generateUnauthenticatedRole } from './roles/generate-unauthenticated-role';
 
 export function CognitoIdentityPool({ stack }: StackContext) {
   const userPool = use(CognitoUserPool);
@@ -23,13 +22,9 @@ export function CognitoIdentityPool({ stack }: StackContext) {
     ],
   });
 
-  const unauthenticatedRole = generateUnauthenticatedRole(stack, identityPool);
-
   new CfnIdentityPoolRoleAttachment(stack, 'identityPoolRoleAttachment', {
     identityPoolId: identityPool.ref,
-    roles: {
-      unauthenticated: unauthenticatedRole.roleArn,
-    },
+    roles: {},
     roleMappings: {
       mapping: {
         type: 'Token',

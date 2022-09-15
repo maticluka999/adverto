@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import ErrorLabel from '../../components/ErrorLabel';
 import Input from '../../components/Input';
@@ -15,11 +15,7 @@ import { S3Client } from '../../utils/aws/s3.utils';
 import { getAWSCredentials } from '../../utils/aws/aws.utils';
 import * as AWS from 'aws-sdk';
 import { getFileExtension } from '../../utils/file.utils';
-
-type Props = {
-  user: User;
-  setUser: (user: User) => void;
-};
+import AuthContext from '../../context/auth-context';
 
 const validationSchema = yup.object({
   email: yup.string().email().required('Email is required'),
@@ -28,10 +24,11 @@ const validationSchema = yup.object({
   phoneNumber: yup.string(),
 });
 
-function PersonalInfoTab({ user, setUser }: Props) {
+function PersonalInfoTab() {
+  const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const fileInput = useRef<HTMLInputElement>(null);
 
+  const fileInput = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File>();
 
   const {
@@ -41,10 +38,10 @@ function PersonalInfoTab({ user, setUser }: Props) {
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      email: user.attributes.email,
-      givenName: user.attributes.givenName,
-      familyName: user.attributes.familyName,
-      phoneNumber: user.attributes.phoneNumber,
+      email: user!.attributes.email,
+      givenName: user!.attributes.givenName,
+      familyName: user!.attributes.familyName,
+      phoneNumber: user!.attributes.phoneNumber,
     },
   });
 
@@ -55,10 +52,10 @@ function PersonalInfoTab({ user, setUser }: Props) {
   const onSubmit = async (data: Record<string, string>) => {
     setUpdatingInfo(true);
 
-    const user = await Auth.currentAuthenticatedUser();
+    const currentUser = await Auth.currentAuthenticatedUser();
 
     try {
-      const response = await Auth.updateUserAttributes(user, {
+      const response = await Auth.updateUserAttributes(currentUser, {
         given_name: data.givenName,
         family_name: data.familyName,
         phone_number: data.phoneNumber,
@@ -108,10 +105,10 @@ function PersonalInfoTab({ user, setUser }: Props) {
       return;
     }
 
-    const user = await Auth.currentAuthenticatedUser();
+    const currentUser = await Auth.currentAuthenticatedUser();
 
     try {
-      const response = await Auth.updateUserAttributes(user, {
+      const response = await Auth.updateUserAttributes(currentUser, {
         picture: s3response.Location,
       });
       console.log(response);
@@ -124,7 +121,7 @@ function PersonalInfoTab({ user, setUser }: Props) {
 
     setFile(undefined);
 
-    const u = user;
+    const u = user!;
     u.attributes.picture = s3response.Location;
     setUser(u);
 
@@ -153,7 +150,7 @@ function PersonalInfoTab({ user, setUser }: Props) {
 
     setFile(undefined);
 
-    const u = user;
+    const u = user!;
     u.attributes.picture = '';
     setUser(u);
 
@@ -167,7 +164,7 @@ function PersonalInfoTab({ user, setUser }: Props) {
           <img
             src={
               (file && URL.createObjectURL(file)) ||
-              user.attributes.picture ||
+              user!.attributes.picture ||
               defaultProfilePicture
             }
             alt='profile pic'
@@ -260,8 +257,8 @@ function PersonalInfoTab({ user, setUser }: Props) {
         />
         <ErrorLabel text={errors.familyName?.message} />
         <div className='flex flex-col items-end text-sm self-end'>
-          {user.attributes.phoneNumber &&
-            (user.attributes.phoneNumberVerified ? (
+          {user!.attributes.phoneNumber &&
+            (user!.attributes.phoneNumberVerified ? (
               <div className='flex items-center'>
                 <CheckCircle className='w-6 h-6 mr-1' />
                 <div>Phone number verified</div>
@@ -277,7 +274,7 @@ function PersonalInfoTab({ user, setUser }: Props) {
                   onClick={(e) => {
                     e.preventDefault();
                     navigate('/verify-phone-number', {
-                      state: { phoneNumber: user.attributes.phoneNumber },
+                      state: { phoneNumber: user!.attributes.phoneNumber },
                     });
                   }}
                 >

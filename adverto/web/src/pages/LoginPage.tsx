@@ -1,11 +1,14 @@
 import { Auth } from 'aws-amplify';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 import { ReactComponent as GoogleIcon } from '../assets/icons/google.svg';
+import AuthContext from '../context/auth-context';
+import { getUser } from '../utils/aws/aws.utils';
 
 function LoginPage() {
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
@@ -31,6 +34,7 @@ function LoginPage() {
     try {
       const response = await Auth.signIn(username, password);
       console.log(response);
+      setUser(await getUser());
       navigate('/');
     } catch (error: any) {
       switch (error.name) {
@@ -57,8 +61,11 @@ function LoginPage() {
     }
   };
 
-  const googleSignIn = () => {
-    Auth.federatedSignIn({ provider: CognitoHostedUIIdentityProvider.Google });
+  const googleSignIn = async () => {
+    await Auth.federatedSignIn({
+      provider: CognitoHostedUIIdentityProvider.Google,
+    });
+    setUser(await getUser());
   };
 
   return (

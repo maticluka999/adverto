@@ -13,13 +13,11 @@ const UserInfoSection = ({ user }: Props) => {
             <div className='flex flex-col'>
               <UserImage src={user.picture} width={100} height={100} />
             </div>
-            <div className='w-full md:w-500px md:ml-20'>
-              <p className='text-xl md:text-2xl text-center md:text-left mt-2 md:ml-2'>
+            <div className='w-full md:w-500px ml-5 md:ml-20'>
+              <p className='text-xl md:text-2xl mt-2 '>
                 {`${user.givenName} ${user.familyName}`}
               </p>
-              <div className='pl-1 text-center md:text-left'>
-                <p className='text-sm break-words'>{user.email}</p>
-              </div>
+              <p className='text-sm break-words'>{user.email}</p>
             </div>
           </div>
         ) : (

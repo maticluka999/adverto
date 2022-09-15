@@ -1,7 +1,7 @@
 import { API } from 'aws-amplify';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import AuthContext from '../../context/auth-context';
 import { Ad, Action, ActionColor, UserRole } from '../../types';
-import { getUser } from '../../utils/aws/aws.utils';
 import ActionsPopup from '../ActionsPopup';
 
 type Props = {
@@ -11,6 +11,8 @@ type Props = {
 };
 
 function AdActionsPopup({ ad, toggle, onRemoveAd }: Props) {
+  const { user } = useContext(AuthContext);
+
   const [fetching, setFetching] = useState(false);
   const [actions, setActions] = useState<Action[]>();
 
@@ -19,13 +21,11 @@ function AdActionsPopup({ ad, toggle, onRemoveAd }: Props) {
   const removeAd = async () => {
     setFetching(true);
 
-    const user = await getUser();
-
-    if (user.roles.includes(UserRole.ADMIN)) {
+    if (user?.roles.includes(UserRole.ADMIN)) {
       try {
         await API.del(
           'api',
-          `/admin-delete-ad?pk=${ad.advertiser.sub}&sk=${ad.id}`,
+          `/commercials/${ad.id}/admin?pk=${ad.advertiser.sub}`,
           {}
         );
         onRemoveAd(ad.id);
@@ -34,7 +34,7 @@ function AdActionsPopup({ ad, toggle, onRemoveAd }: Props) {
       }
     } else {
       try {
-        await API.del('api', `/ads/${ad.id}`, {});
+        await API.del('api', `/commercials/${ad.id}`, {});
         onRemoveAd(ad.id);
       } catch (error) {
         console.error(error);
@@ -46,10 +46,9 @@ function AdActionsPopup({ ad, toggle, onRemoveAd }: Props) {
 
   useEffect(() => {
     const generateActions = async () => {
-      const user = await getUser();
       const actions: Action[] = [];
 
-      if (ad.advertiser.sub === user.attributes.sub) {
+      if (ad.advertiser.sub === user?.attributes.sub) {
         const editAdAction = {
           name: 'Edit',
           execute: editAd,
@@ -60,8 +59,8 @@ function AdActionsPopup({ ad, toggle, onRemoveAd }: Props) {
       }
 
       if (
-        ad.advertiser.sub === user.attributes.sub ||
-        user.roles.includes(UserRole.ADMIN)
+        ad.advertiser.sub === user?.attributes.sub ||
+        user?.roles.includes(UserRole.ADMIN)
       ) {
         const removeAdAction = {
           name: 'Remove',

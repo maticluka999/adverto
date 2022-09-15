@@ -11,6 +11,7 @@ export function ApiGateway({ stack }: StackContext) {
 
   const api = new Api(stack, 'api', {
     defaults: {
+      authorizer: 'iam',
       function: {
         permissions: [db, bucket],
         environment: {
@@ -23,40 +24,29 @@ export function ApiGateway({ stack }: StackContext) {
     },
     routes: {
       // create ad
-      'POST /ads': {
-        authorizer: 'iam',
-        function: 'functions/ads/create-ad.handler',
-      },
+      'POST /commercials': 'functions/ads/create-ad.handler',
 
       // get all ads
-      'GET /ads': 'functions/ads/get-ads.handler',
-
-      // get ads by advertiser id
-      'GET /advertisers/{id}/ads': 'functions/ads/get-advertisers-ads.handler',
+      'GET /commercials': {
+        function: 'functions/ads/get-ads.handler',
+        authorizer: 'none',
+      },
 
       // delete ad
-      'DELETE /ads/{id}': {
-        authorizer: 'iam',
-        function: 'functions/ads/delete-ad.handler',
-      },
+      'DELETE /commercials/{id}': 'functions/ads/delete-ad.handler',
 
       // admin delete ad
-      'DELETE /admin-delete-ad': {
-        authorizer: 'iam',
-        function: 'functions/ads/admin-delete-ad.handler',
-      },
+      'DELETE /commercials/{id}/admin': 'functions/ads/delete-ad-admin.handler',
     },
   });
 
-  api.getFunction('GET /ads')?.addToRolePolicy(
+  api.getFunction('GET /commercials')?.addToRolePolicy(
     new PolicyStatement({
       actions: ['cognito-idp:ListUsers'],
       effect: Effect.ALLOW,
       resources: [userPool.userPoolArn],
     })
   );
-
-  api;
 
   stack.addOutputs({
     API_URL: api.url,

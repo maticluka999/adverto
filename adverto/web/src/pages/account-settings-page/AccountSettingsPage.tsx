@@ -1,12 +1,11 @@
-import { ReactComponent as UserCircle } from '../../assets/icons/user-circle.svg';
+import { useContext, useState } from 'react';
 import { ReactComponent as ShieldCheck } from '../../assets/icons/shield-check.svg';
+import { ReactComponent as UserCircle } from '../../assets/icons/user-circle.svg';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import AuthContext from '../../context/auth-context';
 import AccountSettingsTabButton from './AccountSettingsTabButton';
-import { useEffect, useState } from 'react';
 import PersonalInfoTab from './PersonalInfoTab';
 import SecurityTab from './SecurityTab';
-import { User } from '../../types';
-import LoadingSpinner from '../../components/LoadingSpinner';
-import { getUser } from '../../utils/aws/aws.utils';
 
 export enum AccountSettingsPageTab {
   PERSONAL_INFO = 'personal_info',
@@ -17,15 +16,7 @@ function AccountSettingsPage() {
   const [selectedTab, setSelectedTab] = useState(
     AccountSettingsPageTab.PERSONAL_INFO
   );
-  const [user, setUser] = useState<User>();
-
-  useEffect(() => {
-    const setupUser = async () => {
-      setUser(await getUser());
-    };
-
-    setupUser();
-  }, []);
+  const { user, setUser } = useContext(AuthContext);
 
   const renderTabButtons = () => {
     return (
@@ -52,9 +43,9 @@ function AccountSettingsPage() {
   const renderTab = () => {
     switch (selectedTab) {
       case AccountSettingsPageTab.PERSONAL_INFO:
-        return <PersonalInfoTab user={user!} setUser={setUser} />;
+        return <PersonalInfoTab />;
       case AccountSettingsPageTab.SECURITY:
-        return <SecurityTab user={user!} />;
+        return <SecurityTab />;
     }
   };
 

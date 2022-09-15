@@ -1,21 +1,23 @@
 import { Auth } from 'aws-amplify';
+import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import AuthContext from '../../context/auth-context';
 import { User } from '../../types';
 import MenuToggleButton from './MenuToggleButton';
 import './navbar-menu-animation.css';
 
 type Props = {
-  user: User;
   toggleMenu: () => void;
 };
 
-function Menu({ user, toggleMenu }: Props) {
+function Menu({ toggleMenu }: Props) {
+  const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const renderMenuLinks = () => {
     const menuLinks = [
       { text: 'Home', pathname: '/' },
-      { text: 'Profile', pathname: `advertisers/${user.attributes.sub}` },
+      { text: 'Profile', pathname: `advertisers/${user!.attributes.sub}` },
       {
         text: 'Account settings',
         pathname: '/account-settings',
@@ -34,6 +36,7 @@ function Menu({ user, toggleMenu }: Props) {
   const signOut = async () => {
     await Auth.signOut();
     navigate('/login');
+    setUser(undefined);
     toggleMenu();
   };
 

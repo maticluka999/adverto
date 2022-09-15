@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useContext } from 'react';
+import AuthContext from '../../context/auth-context';
 import { Ad } from '../../types';
 import LoadingSpinner from '../LoadingSpinner';
 import AdList from './AdList';
 import CreateAdSection from './CreateAdSection';
-import { testAds } from './test-ads';
 
 type Props = {
   ads?: Ad[];
@@ -12,11 +12,13 @@ type Props = {
 };
 
 function Ads({ ads, onCreateAd, onRemoveAd }: Props) {
+  const { user } = useContext(AuthContext);
+
   return (
-    <div className='flex flex-col w-full items-center'>
+    <div className='flex flex-col w-full items-center px-2'>
       {ads ? (
         <>
-          <CreateAdSection onCreateAd={onCreateAd} />
+          {user && <CreateAdSection onCreateAd={onCreateAd} />}
           <AdList ads={ads} onRemoveAd={onRemoveAd} />
         </>
       ) : (

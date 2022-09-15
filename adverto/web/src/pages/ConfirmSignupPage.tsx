@@ -1,9 +1,11 @@
 import { Auth } from 'aws-amplify';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ErrorLabel from '../components/ErrorLabel';
 import Input from '../components/Input';
 import LoadingSpinner from '../components/LoadingSpinner';
+import AuthContext from '../context/auth-context';
+import { getUser } from '../utils/aws/aws.utils';
 
 type State = {
   username: string;
@@ -11,6 +13,7 @@ type State = {
 };
 
 function ConfirmSignupPage() {
+  const { setUser } = useContext(AuthContext);
   const location = useLocation();
   const { username, password } = location.state as State;
 
@@ -43,6 +46,7 @@ function ConfirmSignupPage() {
       const signInResponse = await Auth.signIn(username, password);
       console.log(signInResponse);
 
+      setUser(await getUser());
       navigate('/');
     } catch (error: any) {
       console.log(error);

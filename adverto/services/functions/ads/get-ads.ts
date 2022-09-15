@@ -5,7 +5,7 @@ import { adToAdDto, cognitoUserToAdvertiserDto } from 'functions/utils/mappers';
 import { Ad } from 'functions/utils/model';
 
 // queries ads sorted by time of creation (gsi1sk = createdAt)
-const queryParams: aws.DynamoDB.DocumentClient.QueryInput = {
+const allAdsQueryParams: aws.DynamoDB.DocumentClient.QueryInput = {
   TableName: process.env.TABLE_NAME!,
   IndexName: 'gsi1',
   KeyConditionExpression: 'gsi1pk = :gsi1pkValue and gsi1sk > :gsi1skValue',
@@ -16,7 +16,31 @@ const queryParams: aws.DynamoDB.DocumentClient.QueryInput = {
   ScanIndexForward: false,
 };
 
+// queries ads for specific advertiser sorted by time of creation (gsi1sk = createdAt)
+function advertisersAdsQueryParams(
+  advertiserSub: string
+): aws.DynamoDB.DocumentClient.QueryInput {
+  return {
+    TableName: process.env.TABLE_NAME!,
+    IndexName: 'gsi1',
+    KeyConditionExpression: 'gsi1pk = :gsi1pkValue and gsi1sk > :gsi1skValue',
+    FilterExpression: 'pk = :pkValue',
+    ExpressionAttributeValues: {
+      ':gsi1pkValue': 'ad',
+      ':gsi1skValue': 0,
+      ':pkValue': advertiserSub,
+    },
+    ScanIndexForward: false,
+  };
+}
+
 export async function handler(event: APIGatewayEvent) {
+  const advertiserSub = event.queryStringParameters?.advertiserSub;
+
+  const queryParams = advertiserSub
+    ? advertisersAdsQueryParams(advertiserSub)
+    : allAdsQueryParams;
+
   const client = new aws.DynamoDB.DocumentClient();
   const adsDynamoResponse = await client.query(queryParams).promise();
   const ads = adsDynamoResponse.Items!;
