@@ -18,10 +18,10 @@ export type AdDto = {
   text: string;
   price: number;
   imageUrl?: string;
-  advertiser?: AdvertiserDto;
+  advertiser?: UserDto;
 };
 
-export type AdvertiserDto = {
+export type UserDto = {
   sub: string;
   email: string;
   givenName: string;

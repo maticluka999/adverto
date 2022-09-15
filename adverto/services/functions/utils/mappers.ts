@@ -1,7 +1,7 @@
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
-import { Ad, AdvertiserDto, AdDto } from './model';
+import { Ad, UserDto, AdDto } from './model';
 
-export function adToAdDto(ad: Ad, advertiser?: AdvertiserDto): AdDto {
+export function adToAdDto(ad: Ad, advertiser?: UserDto): AdDto {
   return {
     id: ad.sk,
     title: ad.title,
@@ -13,9 +13,9 @@ export function adToAdDto(ad: Ad, advertiser?: AdvertiserDto): AdDto {
   };
 }
 
-export function cognitoUserToAdvertiserDto(
+export function cognitoUserToUserDto(
   user: CognitoIdentityServiceProvider.UserType
-): AdvertiserDto {
+): UserDto {
   return {
     sub: user.Attributes!.find((item) => item.Name === 'sub')!['Value']!,
     email: user.Attributes!.find((item) => item.Name === 'email')!['Value']!,

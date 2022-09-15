@@ -3,15 +3,25 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Ads from '../../components/ads/Ads';
 import PageNotFound from '../../components/PageNotFound';
-import { Ad } from '../../types';
-import UserInfoSection from './UserInfoSection';
+import { Ad, AdvertiserDto } from '../../types';
+import AdvertiserInfoSection from './UserInfoSection';
 
 function ProfilePage() {
   const { sub } = useParams();
   const [pageNotFound, setPageNotFound] = useState(false);
   const [ads, setAds] = useState<Ad[]>();
+  const [advertiser, setAdvertiser] = useState<AdvertiserDto>();
 
   useEffect(() => {
+    const fetchAdvertiser = async () => {
+      try {
+        const response = await API.get('api', `/users/${sub}`, {});
+        setAdvertiser(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const fetchAds = async () => {
       const response = await API.get(
         'api',
@@ -21,6 +31,7 @@ function ProfilePage() {
       setAds(response);
     };
 
+    fetchAdvertiser();
     fetchAds();
   }, []);
 
@@ -38,7 +49,7 @@ function ProfilePage() {
         <PageNotFound />
       ) : (
         <>
-          {ads && <UserInfoSection user={ads[0].advertiser} />}
+          {advertiser && <AdvertiserInfoSection advertiser={advertiser} />}
           <Ads ads={ads} onCreateAd={onCreateAd} onRemoveAd={onRemoveAd} />
         </>
       )}

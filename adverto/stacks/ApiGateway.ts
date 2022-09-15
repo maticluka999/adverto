@@ -37,20 +37,23 @@ export function ApiGateway({ stack }: StackContext) {
 
       // admin delete ad
       'DELETE /commercials/{id}/admin': 'functions/ads/delete-ad-admin.handler',
+
+      // get user
+      'GET /users/{sub}': {
+        function: 'functions/users/get-user.handler',
+        authorizer: 'none',
+      },
     },
   });
 
-  api.getFunction('GET /commercials')?.addToRolePolicy(
-    new PolicyStatement({
-      actions: ['cognito-idp:ListUsers'],
-      effect: Effect.ALLOW,
-      resources: [userPool.userPoolArn],
-    })
-  );
-
-  stack.addOutputs({
-    API_URL: api.url,
+  const listUsersStatement = new PolicyStatement({
+    actions: ['cognito-idp:ListUsers'],
+    effect: Effect.ALLOW,
+    resources: [userPool.userPoolArn],
   });
+
+  api.getFunction('GET /commercials')?.addToRolePolicy(listUsersStatement);
+  api.getFunction('GET /users/{sub}')?.addToRolePolicy(listUsersStatement);
 
   return api;
 }

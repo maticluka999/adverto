@@ -1,7 +1,7 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import * as aws from 'aws-sdk';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
-import { adToAdDto, cognitoUserToAdvertiserDto } from 'functions/utils/mappers';
+import { adToAdDto, cognitoUserToUserDto } from 'functions/utils/mappers';
 import { Ad } from 'functions/utils/model';
 
 // queries ads sorted by time of creation (gsi1sk = createdAt)
@@ -75,8 +75,8 @@ async function getAdvertisersForAds(ads: any) {
   const responses = await Promise.all(requests);
 
   const advertisers = responses.map((response) => {
-    const user = response.Users![0]; // we only fetch only one user (on index 0)
-    return cognitoUserToAdvertiserDto(user);
+    const user = response.Users![0]; // we only fetch one user (on index 0)
+    return cognitoUserToUserDto(user);
   });
 
   return advertisers;
