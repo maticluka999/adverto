@@ -1,5 +1,6 @@
 import { API } from 'aws-amplify';
 import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/auth-context';
 import { Ad, Action, ActionColor, UserRole } from '../../types';
 import ActionsPopup from '../ActionsPopup';
@@ -12,11 +13,16 @@ type Props = {
 
 function AdActionsPopup({ ad, toggle, onRemoveAd }: Props) {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [fetching, setFetching] = useState(false);
   const [actions, setActions] = useState<Action[]>();
 
-  const editAd = () => {};
+  const updateAd = () => {
+    navigate('/update-ad', {
+      state: { ad },
+    });
+  };
 
   const removeAd = async () => {
     setFetching(true);
@@ -49,13 +55,13 @@ function AdActionsPopup({ ad, toggle, onRemoveAd }: Props) {
       const actions: Action[] = [];
 
       if (ad.advertiser.sub === user?.attributes.sub) {
-        const editAdAction = {
+        const updateAdAction = {
           name: 'Edit',
-          execute: editAd,
+          execute: updateAd,
           color: ActionColor.BLACK,
           setFetching,
         };
-        actions.push(editAdAction);
+        actions.push(updateAdAction);
       }
 
       if (

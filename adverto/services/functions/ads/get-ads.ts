@@ -1,11 +1,11 @@
 import { APIGatewayEvent } from 'aws-lambda';
-import * as aws from 'aws-sdk';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { adToAdDto, cognitoUserToUserDto } from 'functions/utils/mappers';
 import { Ad } from 'functions/utils/model';
 
 // queries ads sorted by time of creation (gsi1sk = createdAt)
-const allAdsQueryParams: aws.DynamoDB.DocumentClient.QueryInput = {
+const allAdsQueryParams: DocumentClient.QueryInput = {
   TableName: process.env.TABLE_NAME!,
   IndexName: 'gsi1',
   KeyConditionExpression: 'gsi1pk = :gsi1pkValue and gsi1sk > :gsi1skValue',
@@ -19,7 +19,7 @@ const allAdsQueryParams: aws.DynamoDB.DocumentClient.QueryInput = {
 // queries ads for specific advertiser sorted by time of creation (gsi1sk = createdAt)
 function advertisersAdsQueryParams(
   advertiserSub: string
-): aws.DynamoDB.DocumentClient.QueryInput {
+): DocumentClient.QueryInput {
   return {
     TableName: process.env.TABLE_NAME!,
     IndexName: 'gsi1',
@@ -41,7 +41,7 @@ export async function handler(event: APIGatewayEvent) {
     ? advertisersAdsQueryParams(advertiserSub)
     : allAdsQueryParams;
 
-  const client = new aws.DynamoDB.DocumentClient();
+  const client = new DocumentClient();
   const adsDynamoResponse = await client.query(queryParams).promise();
   const ads = adsDynamoResponse.Items!;
   const advertisers = await getAdvertisersForAds(ads);

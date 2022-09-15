@@ -32,6 +32,9 @@ export function ApiGateway({ stack }: StackContext) {
         authorizer: 'none',
       },
 
+      // create ad
+      'PUT /commercials': 'functions/ads/update-ad.handler',
+
       // delete ad
       'DELETE /commercials/{id}': 'functions/ads/delete-ad.handler',
 

@@ -1,15 +1,22 @@
 import { APIGatewayEvent } from 'aws-lambda';
-import * as aws from 'aws-sdk';
-import { S3 } from 'aws-sdk';
-import { randomUUID } from 'crypto';
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { extractSubFromEvent } from 'functions/utils/auth.utils';
-import { Ad } from 'functions/utils/model';
 import { adToAdDto } from 'functions/utils/mappers';
+import { Ad } from 'functions/utils/model';
 import { adValidationSchema } from 'functions/utils/validationSchemas';
 import { getAdImagePresignedPostData } from './common';
 
 export async function handler(event: APIGatewayEvent) {
   const parsedBody = JSON.parse(event.body!);
+
+  const id = parsedBody.id;
+
+  if (!id) {
+    return {
+      statusCode: 400,
+      body: 'Id is required.',
+    };
+  }
 
   // validation
   try {
@@ -21,18 +28,17 @@ export async function handler(event: APIGatewayEvent) {
     };
   }
 
-  const { title, text, price, imageContentType } = parsedBody;
+  const { title, text, price, imageContentType, imageUrl } = parsedBody;
 
   // presigned url
-  const id = randomUUID();
   let presignedPostData = getAdImagePresignedPostData(
     imageContentType,
     extractSubFromEvent(event),
     id
   );
 
-  // generate new ad
-  const newAd = {
+  // generate update data
+  const updateData = {
     pk: extractSubFromEvent(event),
     sk: id,
     gsi1pk: 'ad' as Ad['gsi1pk'],
@@ -42,15 +48,15 @@ export async function handler(event: APIGatewayEvent) {
     price,
     imageUrl: presignedPostData
       ? `${presignedPostData!.url}/${presignedPostData!.fields.key}`
-      : undefined,
+      : imageUrl,
   };
 
-  // insert to db
-  const client = new aws.DynamoDB.DocumentClient();
-  const params: aws.DynamoDB.DocumentClient.PutItemInput = {
+  // replace existing ad
+  const client = new DocumentClient();
+  const params: DocumentClient.PutItemInput = {
     TableName: process.env.TABLE_NAME!,
     Item: {
-      ...newAd,
+      ...updateData,
     },
   };
 
@@ -68,7 +74,7 @@ export async function handler(event: APIGatewayEvent) {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      ad: adToAdDto(newAd),
+      ad: adToAdDto(updateData),
       presignedPostData,
     }),
   };

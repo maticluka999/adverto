@@ -10,6 +10,7 @@ import Navbar from './components/navbar/Navbar';
 import ProfilePage from './pages/profile-page/ProfilePage';
 
 import ScrollToTop from './ScrollToTop';
+import UpdateAdPage from './pages/UpdateAdPage';
 
 function MyRouter() {
   return (
@@ -28,6 +29,7 @@ function MyRouter() {
           element={<VerifyPhoneNumberPage />}
         />
         <Route path='/advertisers/:sub' element={<ProfilePage />} />
+        <Route path='/update-ad' element={<UpdateAdPage />} />
       </Routes>
     </BrowserRouter>
   );

@@ -35,7 +35,7 @@ function ProfilePage() {
     fetchAds();
   }, []);
 
-  const onCreateAd = (ad: Ad) => {
+  const onCreateUpdateAd = (ad: Ad) => {
     setAds([ad, ...ads!]);
   };
 
@@ -50,7 +50,11 @@ function ProfilePage() {
       ) : (
         <>
           {advertiser && <AdvertiserInfoSection advertiser={advertiser} />}
-          <Ads ads={ads} onCreateAd={onCreateAd} onRemoveAd={onRemoveAd} />
+          <Ads
+            ads={ads}
+            onCreateUpdateAd={onCreateUpdateAd}
+            onRemoveAd={onRemoveAd}
+          />
         </>
       )}
     </div>

@@ -15,7 +15,7 @@ function HomePage() {
     fetchAds();
   }, []);
 
-  const onCreateAd = (ad: Ad) => {
+  const onCreateUpdateAd = (ad: Ad) => {
     setAds([ad, ...ads!]);
   };
 
@@ -25,7 +25,11 @@ function HomePage() {
 
   return (
     <div>
-      <Ads ads={ads} onCreateAd={onCreateAd} onRemoveAd={onRemoveAd} />
+      <Ads
+        ads={ads}
+        onCreateUpdateAd={onCreateUpdateAd}
+        onRemoveAd={onRemoveAd}
+      />
     </div>
   );
 }

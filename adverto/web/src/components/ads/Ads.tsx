@@ -7,18 +7,18 @@ import CreateAdSection from './CreateAdSection';
 
 type Props = {
   ads?: Ad[];
-  onCreateAd: (ad: Ad) => void;
+  onCreateUpdateAd: (ad: Ad) => void;
   onRemoveAd: (adId: string) => void;
 };
 
-function Ads({ ads, onCreateAd, onRemoveAd }: Props) {
+function Ads({ ads, onCreateUpdateAd, onRemoveAd }: Props) {
   const { user } = useContext(AuthContext);
 
   return (
     <div className='flex flex-col w-full items-center px-2'>
       {ads ? (
         <>
-          {user && <CreateAdSection onCreateAd={onCreateAd} />}
+          {user && <CreateAdSection onCreateUpdateAd={onCreateUpdateAd} />}
           <AdList ads={ads} onRemoveAd={onRemoveAd} />
         </>
       ) : (
