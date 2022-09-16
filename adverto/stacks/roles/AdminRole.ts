@@ -7,6 +7,7 @@ import {
 } from 'aws-cdk-lib/aws-iam';
 import { ApiGateway } from '../ApiGateway';
 import { CognitoIdentityPool } from '../CognitoIdentityPool';
+import { CognitoUserPool } from '../CognitoUserPool';
 import { generateExecuteApiRoot } from '../utils/utils';
 
 export function AdminRole({ stack }: StackContext) {
@@ -42,6 +43,20 @@ function addPolicyStatements(stack: Stack, adminRole: Role) {
         `${executeApiRoot}/DELETE/commercials/*`,
         `${executeApiRoot}/DELETE/commercials/*/admin`,
       ],
+    })
+  );
+
+  const userPool = use(CognitoUserPool);
+
+  adminRole.addToPolicy(
+    new PolicyStatement({
+      actions: [
+        'cognito-idp:ListUsers',
+        'cognito-idp:AdminDisableUser',
+        'cognito-idp:AdminEnableUser',
+      ],
+      effect: Effect.ALLOW,
+      resources: [userPool.userPoolArn],
     })
   );
 }

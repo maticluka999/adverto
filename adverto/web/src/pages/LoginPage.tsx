@@ -39,7 +39,11 @@ function LoginPage() {
     } catch (error: any) {
       switch (error.name) {
         case 'NotAuthorizedException':
-          setErrorText('Invalid credentials.');
+          if (error.message === 'User is disabled.') {
+            setErrorText('Account blocked.');
+          } else {
+            setErrorText('Invalid credentials.');
+          }
           break;
         case 'UserNotFoundException':
           setErrorText('Invalid credentials.');

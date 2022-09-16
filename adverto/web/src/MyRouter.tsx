@@ -11,6 +11,7 @@ import ProfilePage from './pages/profile-page/ProfilePage';
 
 import ScrollToTop from './ScrollToTop';
 import UpdateAdPage from './pages/UpdateAdPage';
+import AdminUsersPage from './pages/admin-users-page/AdminUsersPage';
 
 function MyRouter() {
   return (
@@ -30,6 +31,7 @@ function MyRouter() {
         />
         <Route path='/advertisers/:sub' element={<ProfilePage />} />
         <Route path='/update-ad' element={<UpdateAdPage />} />
+        <Route path='/admin-users' element={<AdminUsersPage />} />
       </Routes>
     </BrowserRouter>
   );

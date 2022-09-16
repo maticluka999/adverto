@@ -41,7 +41,6 @@ export async function getAWSCredentials(idTokenJwt?: string) {
 export async function getUser(): Promise<User> {
   const currentSession = await Auth.currentSession();
   const idToken = currentSession.getIdToken();
-  console.log(idToken);
   const idTokenPayload = idToken.payload;
 
   const attributes = {
@@ -68,8 +67,6 @@ export async function getUser(): Promise<User> {
       roles.push(UserRole.ADVERTISER);
     }
   });
-
-  console.log(roles);
 
   return {
     attributes,
