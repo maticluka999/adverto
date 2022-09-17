@@ -1,6 +1,6 @@
 export enum PreferredMFA {
   NO_MFA = 'NOMFA',
-  SMS = 'SMSMFA',
+  SMS = 'SMS_MFA',
 }
 
 export type UserAttributes = {
@@ -20,7 +20,6 @@ export enum UserRole {
 
 export type User = {
   attributes: UserAttributes;
-  preferredMFA: PreferredMFA;
   roles: UserRole[];
 };
 

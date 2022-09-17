@@ -1,55 +1,35 @@
 import { Auth } from 'aws-amplify';
 import { useContext, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ErrorLabel from '../components/ErrorLabel';
 import Input from '../components/Input';
 import LoadingSpinner from '../components/LoadingSpinner';
 import AuthContext from '../context/auth-context';
 import { getUser } from '../utils/aws/aws.utils';
 
-type State = {
-  username: string;
-  password: string;
+type Props = {
+  mfaUser: any;
 };
 
-function ConfirmSignupPage() {
+function SmsMfa({ mfaUser }: Props) {
   const { setUser } = useContext(AuthContext);
-  const location = useLocation();
-  const { username, password } = location.state as State;
-
   const navigate = useNavigate();
 
   const [code, setCode] = useState('');
   const [errorText, setErrorText] = useState('');
   const [fetching, setFetching] = useState(false);
 
-  const resend = async () => {
-    setFetching(true);
-
-    try {
-      const response = await Auth.resendSignUp(username);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-
-    setFetching(false);
-  };
-
   const confirm = async () => {
     setFetching(true);
 
     try {
-      const confirmResponse = await Auth.confirmSignUp(username, code);
-      console.log(confirmResponse);
+      const response = await Auth.confirmSignIn(mfaUser, code);
+      console.log(response);
 
-      const signInResponse = await Auth.signIn(username, password);
-      console.log(signInResponse);
-
-      setUser(await getUser(true));
+      setUser(await getUser());
       navigate('/');
     } catch (error: any) {
-      console.log(error);
+      console.log('error during verification:', error);
 
       switch (error.name) {
         case 'CodeMismatchException':
@@ -66,8 +46,7 @@ function ConfirmSignupPage() {
   return (
     <div className='flex flex-col items-center'>
       <div className='flex flex-col items-center bg-white shadow-lg mt-28 p-5'>
-        <div>Verification code has been sent to:</div>
-        <div className='mb-9'>{username}</div>
+        <div className='mb-7'>Two step authentication</div>
         <Input
           text='Enter verification code:'
           placeholder=''
@@ -82,12 +61,6 @@ function ConfirmSignupPage() {
               <button className='btnPrimary w-32' onClick={confirm}>
                 Confirm
               </button>
-              <button
-                className='mt-3 text-blue-600 hover:underline'
-                onClick={resend}
-              >
-                Resend verification code
-              </button>
             </div>
           )}
         </div>
@@ -96,4 +69,4 @@ function ConfirmSignupPage() {
   );
 }
 
-export default ConfirmSignupPage;
+export default SmsMfa;

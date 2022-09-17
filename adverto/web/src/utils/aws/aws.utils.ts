@@ -38,10 +38,14 @@ export async function getAWSCredentials(idTokenJwt?: string) {
   );
 }
 
-export async function getUser(): Promise<User> {
-  const currentSession = await Auth.currentSession();
-  const idToken = currentSession.getIdToken();
-  const idTokenPayload = idToken.payload;
+export async function getUser(bypassCache?: boolean): Promise<User> {
+  const currentUser = await Auth.currentAuthenticatedUser({
+    bypassCache: Boolean(bypassCache),
+  });
+  const idTokenPayload = currentUser.signInUserSession.idToken.payload;
+
+  console.log('idToken:', currentUser.signInUserSession);
+  console.log('idTokenPayload:', idTokenPayload);
 
   const attributes = {
     sub: idTokenPayload.sub,
@@ -53,12 +57,9 @@ export async function getUser(): Promise<User> {
     picture: idTokenPayload.picture,
   };
 
-  const preferredMFA =
-    PreferredMFA[idTokenPayload.preferredMFA as keyof typeof PreferredMFA];
-
   const roles: UserRole[] = [];
 
-  idToken.payload['cognito:roles'].forEach((role: string) => {
+  idTokenPayload['cognito:roles'].forEach((role: string) => {
     if (role.includes('admin')) {
       roles.push(UserRole.ADMIN);
     }
@@ -70,7 +71,6 @@ export async function getUser(): Promise<User> {
 
   return {
     attributes,
-    preferredMFA,
     roles,
   };
 }

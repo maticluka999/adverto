@@ -6,6 +6,7 @@ import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 import { ReactComponent as GoogleIcon } from '../assets/icons/google.svg';
 import AuthContext from '../context/auth-context';
 import { getUser } from '../utils/aws/aws.utils';
+import SmsMfa from './SmsMfa';
 
 function LoginPage() {
   const { setUser } = useContext(AuthContext);
@@ -15,6 +16,7 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [errorText, setErrorText] = useState('');
   const [fetching, setFetching] = useState(false);
+  const [mfaUser, setMfaUser] = useState();
 
   const usernameChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -34,6 +36,12 @@ function LoginPage() {
     try {
       const response = await Auth.signIn(username, password);
       console.log(response);
+
+      if (response.challengeName === 'SMS_MFA') {
+        setMfaUser(response);
+        return;
+      }
+
       setUser(await getUser());
       navigate('/');
     } catch (error: any) {
@@ -73,67 +81,76 @@ function LoginPage() {
   };
 
   return (
-    <div className='h-screen'>
-      <h1 className='text-blue-600 text-4xl text-center font-bold pt-20 mb-8'>
-        Welcome to Adverto
-      </h1>
-      <div className='flex flex-col items-center'>
-        <div className='flex flex-col w-72 mb-3'>
-          <input
-            className='input p-1 mb-2 md:text-lg'
-            type='text'
-            placeholder='email'
-            name='email'
-            onChange={usernameChangeHandler}
-            onKeyDown={onInputKeyDown}
-          />
-          <input
-            className='input p-1 md:text-lg'
-            type='password'
-            placeholder='password'
-            onChange={passwordChangeHandler}
-            onKeyDown={onInputKeyDown}
-          />
+    <>
+      {mfaUser ? (
+        <SmsMfa mfaUser={mfaUser} />
+      ) : (
+        <div className='h-screen'>
+          <h1 className='text-blue-600 text-4xl text-center font-bold pt-20 mb-8'>
+            Welcome to Adverto
+          </h1>
+          <div className='flex flex-col items-center'>
+            <div className='flex flex-col w-72 mb-3'>
+              <input
+                className='input p-1 mb-2 md:text-lg'
+                type='text'
+                placeholder='email'
+                name='email'
+                onChange={usernameChangeHandler}
+                onKeyDown={onInputKeyDown}
+              />
+              <input
+                className='input p-1 md:text-lg'
+                type='password'
+                placeholder='password'
+                onChange={passwordChangeHandler}
+                onKeyDown={onInputKeyDown}
+              />
+            </div>
+            {!fetching && (
+              <Link
+                className='mb-3 text-blue-600 hover:underline'
+                to='/reset-password'
+                state={{ email: '', emailInputDisabled: false }}
+              >
+                Forgot password?
+              </Link>
+            )}
+            {fetching ? (
+              <div className='mt-4'>
+                <LoadingSpinner />
+              </div>
+            ) : (
+              <div className='flex flex-col w-80 px-3 md:px-0 text-lg'>
+                <p
+                  className='text-red-600 text-center text'
+                  hidden={!errorText}
+                >
+                  {errorText}
+                </p>
+                <button className='btnPrimary my-2' onClick={logIn}>
+                  Log in
+                </button>
+                <Link className='btnSecondary text-center' to='/signup'>
+                  Sign up
+                </Link>
+                <button
+                  className='self-center flex items-center mt-5 bg-white shadow-lg p-3'
+                  onClick={googleSignIn}
+                >
+                  <div className='w-6 h-6 mr-3'>
+                    <GoogleIcon />
+                  </div>
+                  <div className='font-bold opacity-50 text-sm md:text-base'>
+                    Sign in with Google
+                  </div>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-        {!fetching && (
-          <Link
-            className='mb-3 text-blue-600 hover:underline'
-            to='/reset-password'
-            state={{ email: '', emailInputDisabled: false }}
-          >
-            Forgot password?
-          </Link>
-        )}
-        {fetching ? (
-          <div className='mt-4'>
-            <LoadingSpinner />
-          </div>
-        ) : (
-          <div className='flex flex-col w-80 px-3 md:px-0 text-lg'>
-            <p className='text-red-600 text-center text' hidden={!errorText}>
-              {errorText}
-            </p>
-            <button className='btnPrimary my-2' onClick={logIn}>
-              Log in
-            </button>
-            <Link className='btnSecondary text-center' to='/signup'>
-              Sign up
-            </Link>
-            <button
-              className='self-center flex items-center mt-5 bg-white shadow-lg p-3'
-              onClick={googleSignIn}
-            >
-              <div className='w-6 h-6 mr-3'>
-                <GoogleIcon />
-              </div>
-              <div className='font-bold opacity-50 text-sm md:text-base'>
-                Sign in with Google
-              </div>
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 

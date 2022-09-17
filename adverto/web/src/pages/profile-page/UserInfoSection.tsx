@@ -2,7 +2,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import UserImage from '../../components/UserImage';
 import { AdvertiserDto } from '../../types';
 
-type Props = { advertiser: AdvertiserDto };
+type Props = { advertiser?: AdvertiserDto };
 
 const AdvertiserInfoSection = ({ advertiser }: Props) => {
   return (

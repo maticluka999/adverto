@@ -12,6 +12,7 @@ import ProfilePage from './pages/profile-page/ProfilePage';
 import ScrollToTop from './ScrollToTop';
 import UpdateAdPage from './pages/UpdateAdPage';
 import AdminUsersPage from './pages/admin-users-page/AdminUsersPage';
+import SmsMfa from './pages/SmsMfa';
 
 function MyRouter() {
   return (

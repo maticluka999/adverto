@@ -79,7 +79,7 @@ function SignupPage() {
   return (
     <div className='flex flex-col items-center md:h-screen bg-gray-200'>
       <form
-        className='flex flex-col items-center text-lg bg-white rounded my-3 lg:my-10 lg:mt-20 mx-3 p-8 shadow-lg md:w-500px'
+        className='flex flex-col items-center text-lg bg-white rounded my-3 lg:my-10 lg:mt-20 mx-3 p-8 shadow-lg md:w-[570px]'
         onSubmit={handleSubmit(onSubmit)}
       >
         <Input

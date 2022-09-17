@@ -1,9 +1,11 @@
 import { Auth } from 'aws-amplify';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ErrorLabel from '../components/ErrorLabel';
 import Input from '../components/Input';
 import LoadingSpinner from '../components/LoadingSpinner';
+import AuthContext from '../context/auth-context';
+import { getUser } from '../utils/aws/aws.utils';
 
 type State = {
   phoneNumber: string;
@@ -13,6 +15,7 @@ function VerifyPhoneNumberPage() {
   const location = useLocation();
   const { phoneNumber } = location.state as State;
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
 
   const [codeSent, setCodeSent] = useState(false);
   const [code, setCode] = useState('');
@@ -47,7 +50,10 @@ function VerifyPhoneNumberPage() {
         code
       );
       console.log(response);
+
       setErrorText('');
+
+      setUser(await getUser());
       navigate('/account-settings');
     } catch (error: any) {
       switch (error.name) {

@@ -49,7 +49,7 @@ function ProfilePage() {
         <PageNotFound />
       ) : (
         <>
-          {advertiser && <AdvertiserInfoSection advertiser={advertiser} />}
+          <AdvertiserInfoSection advertiser={advertiser} />
           <Ads
             ads={ads}
             onCreateUpdateAd={onCreateUpdateAd}
