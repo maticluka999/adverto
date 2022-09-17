@@ -57,7 +57,9 @@ function LoginPage() {
           setErrorText('Invalid credentials.');
           break;
         case 'UserNotConfirmedException':
-          navigate(`/confirm-signup/${username}`);
+          navigate(`/confirm-signup`, {
+            state: { username: username, password: password },
+          });
           break;
         default:
           alert('Unknown error occurred.');
