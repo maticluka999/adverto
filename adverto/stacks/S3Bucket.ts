@@ -7,7 +7,7 @@ export function S3Bucket({ stack }: StackContext) {
     cors: [
       {
         allowedMethods: [HttpMethods.PUT, HttpMethods.POST],
-        allowedOrigins: ['http://localhost:3000'], // DEPLOY_IMPORTANT: this must be set to proper value via console once deployed
+        allowedOrigins: ['*'],
         allowedHeaders: ['*'],
       },
     ],

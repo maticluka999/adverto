@@ -22,8 +22,16 @@ export function CognitoUserPoolClient({ stack }: StackContext) {
     readAttributes: generateReadAttributes(),
     writeAttributes: generateWriteAttributes(),
     oAuth: {
-      callbackUrls: ['http://localhost:3000'], // DEPLOY_IMPORTANT: this must be set to proper value via console once deployed
-      logoutUrls: ['http://localhost:3000/login'], // DEPLOY_IMPORTANT: this must be set to proper value via console once deployed
+      callbackUrls: [
+        stack.stage.startsWith('local')
+          ? 'http://localhost:3000'
+          : process.env.SITE_URL!,
+      ], // DEPLOY_IMPORTANT: set env SITE_URL var
+      logoutUrls: [
+        stack.stage.startsWith('local')
+          ? 'http://localhost:3000/login'
+          : `${process.env.SITE_URL!}/login`,
+      ], // DEPLOY_IMPORTANT: set env SITE_URL var
     },
   });
 
