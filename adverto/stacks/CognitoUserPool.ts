@@ -8,7 +8,7 @@ import {
 import { Effect, Policy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
-import constants from './constants';
+import constants from './utils/constants';
 import { Database } from './Database';
 
 export function CognitoUserPool({ stack }: StackContext) {

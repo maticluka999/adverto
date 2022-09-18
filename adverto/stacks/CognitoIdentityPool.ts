@@ -5,7 +5,7 @@ import {
 } from 'aws-cdk-lib/aws-cognito';
 import { CognitoUserPool } from './CognitoUserPool';
 import { CognitoUserPoolClient } from './CognitoUserPoolClient';
-import constants from './constants';
+import constants from './utils/constants';
 
 export function CognitoIdentityPool({ stack }: StackContext) {
   const userPool = use(CognitoUserPool);

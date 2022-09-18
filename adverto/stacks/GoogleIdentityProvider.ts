@@ -4,7 +4,7 @@ import {
   UserPoolIdentityProviderGoogle,
 } from 'aws-cdk-lib/aws-cognito';
 import { CognitoUserPool } from './CognitoUserPool';
-import constants from './constants';
+import constants from './utils/constants';
 
 export function GoogleIdentityProvider({ stack }: StackContext) {
   const userPool = use(CognitoUserPool);

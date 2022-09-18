@@ -5,7 +5,7 @@ import {
   UserPoolClientIdentityProvider,
 } from 'aws-cdk-lib/aws-cognito';
 import { CognitoUserPool } from './CognitoUserPool';
-import constants from './constants';
+import constants from './utils/constants';
 import standardCognitoReadAttributes from './utils/standard-cognito-read-attributes';
 import standardCognitoWriteAttributes from './utils/standard-cognito-write-attributes';
 

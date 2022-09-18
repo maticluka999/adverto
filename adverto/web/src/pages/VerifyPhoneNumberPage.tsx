@@ -53,7 +53,7 @@ function VerifyPhoneNumberPage() {
 
       setErrorText('');
 
-      setUser(await getUser());
+      setUser(await getUser(true));
       navigate('/account-settings');
     } catch (error: any) {
       switch (error.name) {

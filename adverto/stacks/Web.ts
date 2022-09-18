@@ -7,7 +7,7 @@ import { ApiGateway } from './ApiGateway';
 import { CognitoIdentityPool } from './CognitoIdentityPool';
 import { CognitoUserPool } from './CognitoUserPool';
 import { CognitoUserPoolClient } from './CognitoUserPoolClient';
-import constants from './constants';
+import constants from './utils/constants';
 import { S3Bucket } from './S3Bucket';
 
 export function Web({ stack }: StackContext) {
