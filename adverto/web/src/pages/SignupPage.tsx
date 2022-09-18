@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object({
   email: yup.string().email().required('Email is required'),
-  // username: yup.string().required('Username is required'),
   givenName: yup.string().required('First name is required'),
   familyName: yup.string().required('Last name is required'),
   password: yup
@@ -51,8 +50,6 @@ function SignupPage() {
       },
     };
 
-    // console.log(params);
-
     setFetching(true);
 
     try {
@@ -89,13 +86,6 @@ function SignupPage() {
           placeholder='email'
         />
         <ErrorLabel text={errors.email?.message} />
-        {/* <Input
-          {...register('username')}
-          type='text'
-          text='Username:'
-          placeholder='username'
-        />
-        <ErrorLabel text={errors.username?.message} /> */}
         <Input
           type='text'
           text='First name:'

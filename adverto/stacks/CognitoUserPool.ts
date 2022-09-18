@@ -9,7 +9,6 @@ import { Effect, Policy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import constants from './utils/constants';
-import { Database } from './Database';
 
 export function CognitoUserPool({ stack }: StackContext) {
   const userPool = new UserPool(stack, 'userPool', {
@@ -59,8 +58,6 @@ export function CognitoUserPool({ stack }: StackContext) {
 }
 
 const addTriggers = (stack: Stack, userPool: UserPool) => {
-  const db = use(Database);
-
   // post confirmation
   const postConfirmationTrigger = new NodejsFunction(
     stack,
@@ -68,9 +65,6 @@ const addTriggers = (stack: Stack, userPool: UserPool) => {
     {
       runtime: Runtime.NODEJS_16_X,
       entry: 'services/functions/triggers/post-confirmation-trigger.ts',
-      environment: {
-        TABLE: db.tableName,
-      },
     }
   );
 
@@ -81,11 +75,6 @@ const addTriggers = (stack: Stack, userPool: UserPool) => {
           actions: ['cognito-idp:AdminAddUserToGroup'],
           effect: Effect.ALLOW,
           resources: [userPool.userPoolArn],
-        }),
-        new PolicyStatement({
-          actions: ['dynamodb:PutItem'],
-          effect: Effect.ALLOW,
-          resources: [db.tableArn],
         }),
       ],
     })
