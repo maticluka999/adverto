@@ -17,7 +17,7 @@ function Menu({ toggleMenu }: Props) {
   const renderMenuLinks = () => {
     const menuLinks = [
       { text: 'Home', pathname: '/' },
-      { text: 'Profile', pathname: `advertisers/${user!.attributes.sub}` },
+      { text: 'Profile', pathname: `/advertisers/${user!.attributes.sub}` },
       {
         text: 'Account settings',
         pathname: '/account-settings',
