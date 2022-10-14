@@ -23,6 +23,16 @@ export function ApiGateway({ stack }: StackContext) {
       },
     },
     routes: {
+      // advertiser-function
+      'POST /advertiser-function': {
+        function: 'functions/advertiser-function.handler',
+      },
+
+      // admin-function
+      'POST /admin-function': {
+        function: 'functions/admin-function.handler',
+      },
+
       // create ad
       'POST /commercials': 'functions/ads/create-ad.handler',
 

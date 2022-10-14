@@ -12,7 +12,7 @@ import ProfilePage from './pages/profile-page/ProfilePage';
 import ScrollToTop from './ScrollToTop';
 import UpdateAdPage from './pages/UpdateAdPage';
 import AdminUsersPage from './pages/admin-users-page/AdminUsersPage';
-import SmsMfa from './pages/SmsMfa';
+import TestPage from './pages/TestPage';
 
 function MyRouter() {
   return (
@@ -20,6 +20,7 @@ function MyRouter() {
       <ScrollToTop />
       <Navbar />
       <Routes>
+        <Route path='/test-page' element={<TestPage />} />
         <Route path='/' element={<HomePage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/signup' element={<SignupPage />} />

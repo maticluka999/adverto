@@ -1,3 +1,5 @@
+import { Auth } from 'aws-amplify';
+
 const awsAmplifyConfig = {
   Auth: {
     mandatorySignIn: true,
@@ -5,6 +7,7 @@ const awsAmplifyConfig = {
     userPoolId: process.env.REACT_APP_USER_POOL_ID,
     identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID,
     userPoolWebClientId: process.env.REACT_APP_USER_POOL_CLIENT_ID,
+    customRoleArn: '',
   },
   API: {
     endpoints: [

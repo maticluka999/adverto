@@ -2,7 +2,7 @@ import { Auth } from 'aws-amplify';
 import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/auth-context';
-import { User, UserRole } from '../../types';
+import { User, RoleName } from '../../types';
 import MenuToggleButton from './MenuToggleButton';
 import './navbar-menu-animation.css';
 
@@ -24,7 +24,7 @@ function Menu({ toggleMenu }: Props) {
       },
     ];
 
-    if (user?.roles.includes(UserRole.ADMIN)) {
+    if (user?.isAdmin()) {
       menuLinks.splice(2, 0, { text: 'Users', pathname: '/admin-users' });
     }
 

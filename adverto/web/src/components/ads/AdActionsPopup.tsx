@@ -2,7 +2,7 @@ import { API } from 'aws-amplify';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/auth-context';
-import { Ad, Action, ActionColor, UserRole } from '../../types';
+import { Ad, Action, ActionColor, RoleName } from '../../types';
 import ActionsPopup from '../ActionsPopup';
 
 type Props = {
@@ -27,7 +27,7 @@ function AdActionsPopup({ ad, toggle, onRemoveAd }: Props) {
   const removeAd = async () => {
     setFetching(true);
 
-    if (user?.roles.includes(UserRole.ADMIN)) {
+    if (user?.isAdmin()) {
       try {
         await API.del(
           'api',
@@ -64,10 +64,7 @@ function AdActionsPopup({ ad, toggle, onRemoveAd }: Props) {
         actions.push(updateAdAction);
       }
 
-      if (
-        ad.advertiser.sub === user?.attributes.sub ||
-        user?.roles.includes(UserRole.ADMIN)
-      ) {
+      if (ad.advertiser.sub === user?.attributes.sub || user?.isAdmin()) {
         const removeAdAction = {
           name: 'Remove',
           execute: removeAd,

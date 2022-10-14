@@ -13,15 +13,43 @@ export type UserAttributes = {
   picture: string;
 };
 
-export enum UserRole {
+export enum RoleName {
   ADVERTISER = 'advertiser',
   ADMIN = 'admin',
 }
 
-export type User = {
-  attributes: UserAttributes;
-  roles: UserRole[];
+export type Role = {
+  name: RoleName;
+  arn: string;
 };
+
+export class User {
+  attributes: UserAttributes;
+  roles: Role[];
+
+  constructor(attributes: UserAttributes, roles: Role[]) {
+    this.attributes = attributes;
+    this.roles = roles;
+  }
+
+  isAdmin() {
+    return !!this.roles.find((r) => r.name === RoleName.ADMIN);
+  }
+
+  isAdvertiser() {
+    return !!this.roles.find((r) => r.name === RoleName.ADMIN);
+  }
+
+  getRoleArnByRoleName(roleName: RoleName) {
+    const role = this.roles.find((r) => r.name === roleName);
+
+    if (role) {
+      return role.arn;
+    } else {
+      throw new Error('User has no such role');
+    }
+  }
+}
 
 export type AdvertiserDto = {
   sub: string;

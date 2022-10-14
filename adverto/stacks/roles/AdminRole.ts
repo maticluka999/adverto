@@ -38,6 +38,7 @@ function addPolicyStatements(stack: Stack, adminRole: Role) {
       effect: Effect.ALLOW,
       actions: ['execute-api:Invoke'],
       resources: [
+        `${executeApiRoot}/POST/admin-function`,
         `${executeApiRoot}/POST/commercials`,
         `${executeApiRoot}/PUT/commercials`,
         `${executeApiRoot}/DELETE/commercials/*`,

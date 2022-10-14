@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../../context/auth-context';
-import { Ad, UserRole } from '../../types';
+import { Ad, RoleName } from '../../types';
 import { dateTimeFormatOptions } from '../../utils/date-time-format-options';
 import UserImage from '../UserImage';
 import AdActionsButton from './AdActionsButton';
@@ -16,8 +16,7 @@ function AdItem({ ad, onRemoveAd }: Props) {
   const locale = 'en-US';
 
   const shouldDisplayActionButton =
-    user?.attributes.sub === ad.advertiser.sub ||
-    user?.roles.includes(UserRole.ADMIN);
+    user?.attributes.sub === ad.advertiser.sub || user?.isAdmin();
 
   return (
     <div className='bg-white mt-7 w-full rounded shadow-lg'>
