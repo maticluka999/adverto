@@ -1,4 +1,4 @@
-import { Stack, StackContext, use } from '@serverless-stack/resources';
+import { Function, Stack, StackContext } from '@serverless-stack/resources';
 import {
   Mfa,
   UserPool,
@@ -6,8 +6,6 @@ import {
   VerificationEmailStyle,
 } from 'aws-cdk-lib/aws-cognito';
 import { Effect, Policy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import constants from './utils/constants';
 
 export function CognitoUserPool({ stack }: StackContext) {
@@ -59,12 +57,12 @@ export function CognitoUserPool({ stack }: StackContext) {
 
 const addTriggers = (stack: Stack, userPool: UserPool) => {
   // post confirmation
-  const postConfirmationTrigger = new NodejsFunction(
+  const postConfirmationTrigger = new Function(
     stack,
     'postConfirmationTrigger',
     {
-      runtime: Runtime.NODEJS_16_X,
-      entry: 'services/functions/triggers/post-confirmation-trigger.ts',
+      runtime: 'nodejs16.x',
+      handler: 'functions/triggers/post-confirmation-trigger.handler',
     }
   );
 
