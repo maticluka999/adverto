@@ -7,8 +7,7 @@ import * as aws from 'aws-sdk';
 
 export const handler: PostConfirmationTriggerHandler = async (
   event: PostConfirmationTriggerEvent,
-  context: Context,
-  callback
+  context: Context
 ) => {
   console.log(event);
 
@@ -26,8 +25,8 @@ export const handler: PostConfirmationTriggerHandler = async (
     await provider.adminAddUserToGroup(params).promise();
   } catch (error: any) {
     console.log('error: ', error);
-    callback(error, event);
+    return error;
   }
 
-  callback(null, event);
+  return event;
 };

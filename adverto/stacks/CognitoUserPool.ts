@@ -1,4 +1,9 @@
-import { Stack, StackContext, use } from '@serverless-stack/resources';
+import {
+  Function,
+  Stack,
+  StackContext,
+  use,
+} from '@serverless-stack/resources';
 import {
   Mfa,
   UserPool,
@@ -59,12 +64,12 @@ export function CognitoUserPool({ stack }: StackContext) {
 
 const addTriggers = (stack: Stack, userPool: UserPool) => {
   // post confirmation
-  const postConfirmationTrigger = new NodejsFunction(
+  const postConfirmationTrigger = new Function(
     stack,
     'postConfirmationTrigger',
     {
-      runtime: Runtime.NODEJS_16_X,
-      entry: 'services/functions/triggers/post-confirmation-trigger.ts',
+      runtime: 'nodejs16.x',
+      handler: 'functions/triggers/post-confirmation-trigger.handler',
     }
   );
 
