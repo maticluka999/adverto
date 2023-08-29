@@ -1,7 +1,7 @@
 import { StackContext } from '@serverless-stack/resources';
 import { AnyPrincipal, Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Bucket, HttpMethods } from 'aws-cdk-lib/aws-s3';
-import constants from './constants';
+import constants from './utils/constants';
 
 export function S3Bucket({ stack }: StackContext) {
   const bucket = new Bucket(stack, 'bucket', {
